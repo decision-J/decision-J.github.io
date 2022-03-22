@@ -1,0 +1,1311 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.2">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2022-03-22T12:16:34+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">DECISION  J</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><author><name>decision-J</name></author><entry><title type="html">[CV] YOLOX</title><link href="http://localhost:4000/papers/2021/09/27/YOLOX_review.html" rel="alternate" type="text/html" title="[CV] YOLOX" /><published>2021-09-27T00:00:00+09:00</published><updated>2021-09-27T00:00:00+09:00</updated><id>http://localhost:4000/papers/2021/09/27/YOLOX_review</id><content type="html" xml:base="http://localhost:4000/papers/2021/09/27/YOLOX_review.html"><![CDATA[<h1 id="paper-review-yolox">[Paper review] YOLOX</h1>
+
+<p>YOLO series의 2021년 가장 최신 버전, <strong>YOLO X</strong> 를 리뷰해보려고 합니다.</p>
+
+<p>(이전 버전 리뷰: <a href="https://decision-j.github.io/computer-vision/2021/05/31/Yolo_review.html">YOLO v1 review</a>,  <a href="https://decision-j.github.io/computer-vision/2021/07/26/Yolo_v2_review.html">YOLO v2 review</a>, <a href="https://decision-j.github.io/computer-vision/2021/08/03/Yolo_v3_review.html">YOLO v3 review</a>)</p>
+
+<p>가장 최신의 YOLO series 논문을 살펴보면서 YOLO series는 마무리 하겠습니다!</p>
+
+<p><em>Zheng Ge, Songtao Liu, Feng Wang, Zeming Li, Jian Sun. “YOLOX: Exceeding YOLO Series in 2021”</em> <em>arXiv preprint arXiv:2107.08430 (2021)</em></p>
+
+<p>(본 리뷰의 모든 수식과 그림은 원 논문을 참고했습니다.)</p>
+
+<hr />
+
+<p>YOLOX는 간단히 말하면 YOLO v3에 최신 object detection 기법들을 접목시켜 성능을 개선한 것이라고 할 수 있습니다. 그래서 논문 자체도 YOLO v3를 Baseline으로 하고 기법들을 순차적으로 <strong>add-on</strong> 해나가는 방향으로 저술되어 있습니다. (add-on 한개가 추가될 때마다 성능이 개선됩니다.)</p>
+
+<p>이제 그 add-on을 하나씩 알아보겠습니다.</p>
+
+<h3 id="decoupled-head">Decoupled head</h3>
+
+<p>YOLOX에서 적용한 add-on들 중 굉장히 큰 틀이 바뀌었다고 생각하는 지점이 두 가지가 있는데요. 그 중 하나가 바로 <strong>Decoupled head</strong>입니다.</p>
+
+<p align="center">
+  <img src="https://decision-J.github.io/assets/computer_vision/YOLOX/decoupled.PNG" alt="Decoupled head" />
+</p>
+
+<p>먼저 YOLO의 이전 버전들의 모델들이 object를 어떻게 detect 했는지 잠시 떠올려보죠. 먼저 anchor box를 통해 box boundary안에 object가 있는지 판단합니다. 있다면 detect을 위해 두 가지를 결정해야 하는데요. 먼저 object가 어떤 것인지를(강아지인지, 자동차인지 등) 정의하는 <strong>Classification</strong> 문제를 풉니다. 나머지 하나는 이미지(혹은 비디오) 내부에 어디까지가 object인지, 즉, box 크기를 어느정도로 가져가야 하는지를 결정하는 <strong>Regression</strong> 문제를 풉니다. (박스의 width, height 등의 값은 수치이기 때문에 이를 맞추는 것은 regression으로 보는 것 같습니다.) 이전 버전의 모델들은 이 문제들을 하나의 구조, 즉, 하나의 head에서 해결합니다. 그래서 YOLO v3의 경우 output의 dimension이  <strong>N x N x [3 * (4 + 1 + 80)]</strong> 이었죠! 여기서 4, 1, 80에 각각 regression 문제, object정의, classification 문제에 대한 모델의 답이 담겨있습니다.</p>
+
+<p>문제는 이렇게 하나의 head에서 여러 문제를 해결하려다 보니 최적의 결과를 내지 못한다는 것인데요. 대표적으로 classification, regression 문제에 하나의 loss를 적용해야하는 문제 등을 들 수 있을 겁니다. 이에 이 두 문제를 따로 판단하고자 등장한 기법이 Decoupled head입니다. 저자들은 YOLO v3에 위 그림과 같이 Decoupled head를 적용하여 따로 따로 답을 적어내게 만들었습니다. 이에 따라서 output도 3가지가 추출되겠네요! ㅎㅎ</p>
+
+<p>이렇게 Decoupled head 적용을 통해 모델이 적은 epoch을 가지고도 높은 수준의 AP에 더 잘 수렴하게 되는 결과를 가져온다고 합니다.</p>
+
+<p align="center">
+  <img src="https://decision-J.github.io/assets/computer_vision/YOLOX/decoupled_result.PNG" alt="Decoupled head로 좋아진 성능" />
+</p>
+
+<h3 id="strong-data-augmentation">Strong data augmentation</h3>
+
+<p>두 번째 add-on, strong data augmentation입니다. 챕터 제목에서도 알 수 있듯이, 데이터를 여러 기법으로 증가시켜 모델의 성능을 좋게 만드는 것입니다. YOLOX에서 적용된 data augmentation기법은 <strong>Mosaic</strong>와 <strong>MixUp</strong>입니다.</p>
+
+<p align="center">
+  <img src="https://decision-J.github.io/assets/computer_vision/YOLOX/mixup_mosaic.png" alt="MixUp &amp; Mosaic" />
+</p>
+
+<p>기법 이름과 위 예시 그림에서 어떻게 데이터를 증가시키는지 유추가 가능합니다. Mosaic는 여러 이미지를 격자로 섞어서 data를 만들어내고 MixUp은 투명도를 올려 이미지를 겹침으로써 새로운 data를 만들어내네요!</p>
+
+<h3 id="anchor-free">Anchor-free</h3>
+
+<p>Decoupled head에 이어 YOLOX의 두 번째 큰 변경점, <strong>Anchor-free</strong>입니다. YOLO는 redmon의 V1 ~ V3 까지, 그리고 그 후에 나온 V4, V5 또한 Anchor-based로 만들어졌습니다. 그러나 앞선 리뷰에서도 살펴보았듯이 Anchor-based는 여러 문제가 있습니다. 먼저 anchor box의 수부터 위치까지 heuristic하게 지정해주어야 할 부분들이 많습니다. 또한 box의 수들로 인해 모델의 복잡성이 증가하게 되기도 합니다. 이에 최근 object detection에서는 anchor-free 매커니즘이 등장했는데요! YOLOX에서는 YOLO에서도 Anchor-free를 적용했습니다.</p>
+
+<p>YOLOX에서 사용한 Anchor-free 알고리즘은 <em>FCOS(Fully Convolutional One-Stage object detection)</em>입니다.</p>
+
+<p align="center">
+  <img src="https://decision-J.github.io/assets/computer_vision/YOLOX/FCOS.png" alt="FCOS" />
+</p>
+
+<p>왼쪽 그림에서 볼 수 있는 것처럼 최초로 object의 center라고 생각되는 지점을 predict 합니다. 이후에 center로부터 t, b, r, l, 즉, object의 경계선까지 box의 크기를 regression합니다. 이미지 내에 object가 두개라면 어떨까요? 만약 모델이 예측한 center point가 두 개의 object를 포함하고 있다면, 미리 정해진 object의 크기에 맞추어 <strong>각각</strong> box의 크기를 regression할겁니다. 오른쪽 그림이 이를 잘 나타내줍니다. 만약 YOLOX 모델이 오른쪽 그림 속 point를 예측하였을 때, 미리 정해진 “사람”이라는 object의 크기만큼 regression하고 (주황색 box) “테니스채”라는 object크기 정도만큼 regression하여 (파란색 box) 최종적으로 detect할겁니다.</p>
+
+<h3 id="simota">SimOTA</h3>
+
+<p>그렇다면 YOLOX가 예측한 center point가 <strong>object안에 포함되어 있다</strong>는 정보를 알아야만 그 point에서 regression을 진행할 수 있을겁니다. 아무 점에서나 다 box를 define한다면 그만큼 복잡해지고 detect 속도는 떨어질테니까요! 여기서 <strong>Object안에 포함되어 있다</strong>는 것을 <strong>Label Assignment</strong>라고 표현합니다. Sample data내에서 어떤 point들이 object를 포함하고 있는지를 할당해주는 작업입니다. object안에 존재하는 point를 <em>Positive</em>, 포함되어 있지 않은 point를 <em>negative</em>라고 합니다.</p>
+
+<p>Label assignment에도 여러 가지 방법들이 있습니다. 저자들은 그 중에서 <strong>SimOTA</strong>를 사용했습니다. SimOTA는 Simple OTA의 줄임말로 OTA method를 simple하게 바꾼 버전이라고 생각하시면 되겠습니다.</p>
+
+<p>(아무래도 YOLO의 속도에 중점을 두어 simple하게 개량한 것 같습니다.)</p>
+
+<p>(OTA가 YOLOX 저자가 저술한 또 다른 논문이기 때문에 손쉬웠을 것으로 생각됩니다. <del>그래서 SimOTA를 선택한것 같..</del> )</p>
+
+<p align="center">
+  <img src="https://decision-J.github.io/assets/computer_vision/YOLOX/ota.PNG" alt="OTA" />
+</p>
+
+<p>OTA는 Optimal Transport Assignment의 줄인 말로, 이름에서 나타나는 것처럼 Label assignment작업을 Optimal Transport 문제로 정의하고 이를 해결하는 방식으로 진행합니다. Optimal Transport는 간단하게 쿠팡을 생각하시면 편합니다! 물건을 팔고자하는 판매자들이 있고 이를 구매하고자 하는 고객이 있습니다. 여러 판매자와 여러 고객을 가장 효율적으로 matching시켜주는게 Optimal Transport의 개념입니다. (쿠팡의 새벽배송!)</p>
+
+<p>이를 OTA에서는 Label이 정해지길 바라는 후보 point들이 구매자, pre-defined 되어 있는 Label의 종류들이 구매자라고 보는 것입니다. 위의 그림에서 보면 FPN에서 Label이 할당되기를 기다리고 있는 domain이 세팅됩니다. 세팅을 기다리고 있는 label은 말과 사람, 배경 등 총 5가지네요. 이를 가장 효율적으로 최적화하여 매칭시켜주는 것이 OTA가 할 일입니다. OTA는 이를 <em>Sinkorn-knopp Iteration</em>으로 해결합니다.</p>
+
+<p align="center">
+  <img src="https://decision-J.github.io/assets/computer_vision/YOLOX/ota2.png" alt="OTA와 다른 method 비교" />
+</p>
+
+<p>OTA는 다른 Label assignment 방법인 ATSS나 PAA에 비하여 경계선에 해당하는 부분에서의 할당이 더 정확하다고 합니다. 위 그림을 보면 여성과 아이가 겹쳐지거나 아이의 팔과 배경이 존재하는 등 애매한 빨간 동그라미 안의 구역에서 OTA는 정확하게 할당하는 것을 확인할 수 있습니다.</p>
+
+<h3 id="experiment-results">Experiment Results</h3>
+
+<p>이렇게 YOLOX에서 추가된 굵직한 add-on들을 살펴봤습니다. 결과를 확인해볼까요?</p>
+
+<p align="center">
+  <img src="https://decision-J.github.io/assets/computer_vision/YOLOX/result.png" alt="result" />
+</p>
+
+<p>초당 detect하는 frame수를 뜻하는 FPS에서는 YOLO v5에 살짝 밀리긴 하지만 크게 나쁜 정도는 아니며 AP에서는 SOTA를 달성했네요!</p>
+
+<p>원 논문에서는 YOLO v3뿐 아니라 YOLO v4, v5를 baseline으로 하고 위 add-on 들을 추가한 결과도 제시되어 있으니 관심있으신 분들은 실제 논문을 참고해주세요!</p>
+
+<hr />
+<h3 id="reference">Reference</h3>
+
+<ol>
+  <li>Paper: <a href="https://arxiv.org/abs/2107.08430">Zheng Ge, Songtao Liu, Feng Wang, Zeming Li, Jian Sun. “YOLOX: Exceeding YOLO Series in 2021”</a></li>
+  <li><a href="https://arxiv.org/ftp/arxiv/papers/1903/1903.08589.pdf">DC-SPP-YOLO: Dense Connection and Spatial Pyramid Pooling Based YOLO for Object Detection</a></li>
+  <li><a href="https://arxiv.org/pdf/1904.01355.pdf">FCOS: Fully Convolutional One-Stage Object Detection</a></li>
+  <li><a href="https://arxiv.org/abs/2103.14259">OTA: Optimal Transport Assignment for Object Detection</a></li>
+</ol>]]></content><author><name>HaeYong Joung</name></author><category term="Papers" /><category term="CV" /><category term="object-detection" /><category term="yolo" /><summary type="html"><![CDATA[[Paper review] YOLOX]]></summary></entry><entry><title type="html">[CV] YOLO v3</title><link href="http://localhost:4000/papers/2021/08/03/Yolo_v3_review.html" rel="alternate" type="text/html" title="[CV] YOLO v3" /><published>2021-08-03T00:00:00+09:00</published><updated>2021-08-03T00:00:00+09:00</updated><id>http://localhost:4000/papers/2021/08/03/Yolo_v3_review</id><content type="html" xml:base="http://localhost:4000/papers/2021/08/03/Yolo_v3_review.html"><![CDATA[<h1 id="paper-review-yolo_v3">[Paper review] YOLO_v3</h1>
+
+<p>YOLO series의 3번째 버전, <strong>YOLO v3</strong> 입니다. (이전 버전 리뷰: <a href="https://decision-j.github.io/computer-vision/2021/05/31/Yolo_review.html">YOLO v1 review</a>,  <a href="https://decision-j.github.io/computer-vision/2021/07/26/Yolo_v2_review.html">YOLO v2 review</a>)</p>
+
+<p>Object detection에 관련된 여러 competition이나 project를 살펴볼 때 빠짐없이 등장하는 모델이었는데요!</p>
+
+<p>논문도 아주 짧고 굵어서 호다닥 리뷰해보겠습니다.</p>
+
+<p>구성은 이전 v2와 마찬가지로 기존 버전에서 어떤 것을 업데이트 했는지 말하고 있습니다.</p>
+
+<p><em>Redmon, Joseph, and Ali Farhadi. “Yolov3: An incremental improvement.”</em> <em>arXiv preprint arXiv:1804.02767 (2018)</em></p>
+
+<p>(본 리뷰의 모든 수식과 그림은 원 논문을 참고했습니다.)</p>
+
+<hr />
+
+<h3 id="bounding-box-prediction">Bounding Box Prediction</h3>
+
+<p>이전 YOLO v2에서 <strong>Direct location prediction</strong>이라는 이름의 소챕터로 다루어졌던 내용의 연장입니다. YOLO v2에서의 내용은 Anchor box의 도입에 따라 restriction이 추가된  <strong>$$b_x, b_y, b_w, b_h$$</strong>의 좌표를 prediction하는 것이었습니다.</p>
+
+<p align="center">
+  <img src="https://decision-J.github.io/assets/computer_vision/YOLO_v2/direct_location_pred.PNG" alt="Direct location prediction에서 발췌" />
+</p>
+
+<p>YOLO v3에서도 비슷합니다. 이 때 Coordinate의 update를 위한 gradient로 $$\hat{t_<em>} - t_</em>$$, 일종의 SSE를 사용한다고 합니다.</p>
+
+<p>($$b_*$$를 사용하지 않고 t의 값들을 사용하는 이유가 무엇인지 궁금하네요!)</p>
+
+<p>또한 YOLO v3에서는 <em>Objectness score</em>를 계산하여 정확도를 높입니다. Logistic regression을 통해 각각의 Bounding box가 object를 포함할 확률을 예측하는데요.  1이면 ground truth object를 overlap한다고 볼 수 있습니다. 각 Bounding box들 중에서도 IOU가 <strong>가장 큰 box 1개</strong>만이 실제 object에 할당될 수 있습니다. (대표 박스라고 볼 수 있겠습니다.) Objectness score(아마도 logistic regression의 예측확률?)가 threshold 0.5를 넘었더라도 대표 박스가 되지 못한 개체들의 prediciton은 <strong>무시</strong>되기 때문에 추후 loss function계산에서 제외됩니다.</p>
+
+<h3 id="class-prediction">Class prediction</h3>
+
+<p>YOLO v3에서는 class를 prediction하기 위해 <strong>Binary cross-entropy</strong>를 class 각각에 대해 적용합니다. 이는 일반적으로 softmax를 적용하는 것과는 다른 것인데요. Softmax function을 사용하는 것보다 개별 확률을 예측해주는 것이 <strong>multi-label detection</strong> (ex. class가 여자(woman)이면서 사람(Person)인 경우)에서 더 좋은 성능을 가져온다고 합니다.</p>
+
+<h3 id="darknet-53">Darknet-53</h3>
+
+<p align="center">
+  <img src="https://decision-J.github.io/assets/computer_vision/YOLO_v3/darknet53.jpeg" alt="Darknet-53" />
+</p>
+
+<p>YOLO v2에서 가장 크게 업그레이드 된 파트 중 하나, <strong>Darknet-53</strong>입니다. 기존 YOLO v2에서는 19개의 convolutional layer를 가진 Darknet 19를 backbone으로 활용했습니다. 하지만 점차적으로 복잡해지고 좋은 성능을 요구하는 추세에 맞추어 convolutional  layer를 53개로 늘렸습니다. 이 때, layer가 깊어짐에 따라 diminishing effect 등의 부작용을 방지하기 위해 residual network를 중간 중간 섞어 주었습니다. Residual shortcut connection으로 인해 기존 대비 훨씬 깊어진 Convolutional layer를 가질 수 있게 된 것입니다.</p>
+
+<h3 id="predictions-across-scales">Predictions Across Scales</h3>
+
+<p>YOLO v3에서 darknet-53과 더불어 가장 큰 업데이트이지 않을까 생각됩니다. 바로 prediction box의 scale을 3가지로 나누어 예측한다는 것입니다. 아무래도 region based predict에서 출발한 YOLO였기 때문에 항상 scale에 따른 예측 robust를 불안해하고 신경쓰고 있었는데 이 부분에 대한 보완인 것으로 보입니다. 구체적으로 어떻게 진행하는 지 다음의 도식과 함께 살펴보겠습니다.</p>
+
+<p align="center">
+  <img src="https://decision-J.github.io/assets/computer_vision/YOLO_v3/darknet53_scale.jpg" alt="Darknet-53" />
+</p>
+
+<p>방금 전 살펴본 darknet-53 형태입니다. 빨강, 파랑, 초록의 세 박스를 표시해두었는데요. 이 부분들에서 하나씩 feature map을 뽑아내어 predict을 진행하는 구조입니다. 먼저 빨강 네모에서 32 x 32 feature map을 얻을 수 있습니다. 이를 통해 13 x 13 scale을 가진 box로 predict 하는 것이 가능합니다. (Input size가 416 x 416이므로) 마찬가지로 파란 네모에서는 16 x 16 feature map을 얻을 수 있으며 26 x 26 scale predict이 가능합니다. 마지막으로 초록 네모에서는 8 x 8 feature map을 활용하여 52 x 52 scale predict이 가능하겠네요! 총 <strong>13, 26, 52</strong> 세 가지 scale의 박스를 통해 object를 detect할 수 있습니다.</p>
+
+<p>(의문 1: YOLO v2 논문에서 Multi-Scale Training이라는 part로 YOLO는 batch마다 input size를 바꿔가며 train을 진행한다고 배웠습니다. 위의 scale들은 input size, 여기서는 416 x 416이 바뀌면 자연스럽게 바뀌게 되는 값들인데 그렇다면 predict box의 scale이 가변하는 것이 궁금하네요! ㅎㅎ)</p>
+
+<p>이 때, 각 scale의 prediction값들은 독립적으로 진행되는 것이 아니라 앞 선 결과를 뒤 scale에 반영해주는 식으로 연결되어 있습니다. <strong>Ethan Yanjia Li</strong>님의 블로그에 이를 잘 나타내주는 diagram이 있어 가져왔습니다.</p>
+
+<p align="center">
+  <img src="https://decision-J.github.io/assets/computer_vision/YOLO_v3/multi_scale.jpeg" alt="Different scale predict" />
+</p>
+
+<p>위 diagram을 살펴보시면 먼저 13 x 13 feature vector가 output산출을 위해 Fully Convolutional Network를 탈 때, 중간에 그 결과를 뽑아내어 <strong>upsample</strong>해줍니다. (x2배) 이 vector를 상위 scale, 즉, 26 x 26 feature vector와 <strong>concatenate</strong>해서 다음 FCN을 진행합니다. 마지막 52 x 52도 마찬가지입니다. 이를 통해  <strong>meaningful semantic information</strong>과 <strong>finer-grained information</strong>을 반영할 수 있다고 저자는 밝히고 있습니다.</p>
+
+<p>Output 형태는 <strong>N x N x [3 * (4 + 1 + 80)]</strong>입니다. N은 image의 pixel 정보이고 3은 사용할 box의 수입니다. (본 논문에서는 COCO dataset에 대해 3개의 box를 사용하고 있습니다.) 4는 box의 offset, 1은 objectness prediction, 80은 class predict 정보입니다. 각각의 scale box에 대해서 총 3개의 output을 얻을 수 있습니다.</p>
+
+<h3 id="experiment-results">Experiment Results</h3>
+<p align="center">
+  <img src="https://decision-J.github.io/assets/computer_vision/YOLO_v3/result.png" alt="result" />
+</p>
+
+<p>YOLO v3의 result결과입니다. (plot을 상당히 개성적으로 그리셨습니다 ㅎㅎ) YOLO v3는 mAP 50일 때 가장 좋은 결과를 보여줍니다. (cf. overall mAP 등으로 측정했을 때는 정확도가 조금 떨어지는 것을 확인할 수 있는데요. 저자는 어차피 인간이 object를 판별할 때도 mAP 30이나 50이나 큰 차이를 느끼지 못한다고 언급하며 mAP 50에서의 성능이 좋다면 상관없다고 밝히고 있습니다.) 여전히 타 알고리즘에 비해 현저히 빠른 속도와 준수한 정확도를 보여주는 것을 확인할 수 있습니다.</p>
+
+<p>(의문 2: result plot을 보면 YOLOv3-320, 416, 608로 되어있는 것을 확인할 수 있는데요. Input size의 크기를 의미하는 것 같습니다. 앞 서 의문 1과 연계하여 320과 608은 predict box scale이 달라진 걸까요..?)</p>
+
+<hr />
+<h3 id="reference">Reference</h3>
+
+<ol>
+  <li>
+    <p>Paper: <a href="https://arxiv.org/abs/1804.02767">Redmon, Joseph, and Ali Farhadi. “Yolov3: An incremental improvement.” <em>arXiv preprint arXiv:1804.02767</em> (2018)</a></p>
+  </li>
+  <li>
+    <p><a href="https://towardsdatascience.com/dive-really-deep-into-yolo-v3-a-beginners-guide-9e3d2666280e">YOLO v3 참고 블로그</a></p>
+  </li>
+  <li>
+    <p><a href="https://bestinau.com.au/yolov3-architecture-best-model-in-object-detection/">YOLO v3 참고 블로그 2</a></p>
+  </li>
+  <li>
+    <p><a href="https://machinelearningmastery.com/how-to-perform-object-detection-with-yolov3-in-keras/">YOLO v3 구현 in keras</a></p>
+  </li>
+</ol>]]></content><author><name>HaeYong Joung</name></author><category term="Papers" /><category term="CV" /><category term="object-detection" /><category term="yolo" /><summary type="html"><![CDATA[[Paper review] YOLO_v3]]></summary></entry><entry><title type="html">Narrow Confidence Interval for low N &amp;amp; small p</title><link href="http://localhost:4000/statistics/2021/07/28/Narrow-Confidence-Interval-for-low-N-&-small-p.html" rel="alternate" type="text/html" title="Narrow Confidence Interval for low N &amp;amp; small p" /><published>2021-07-28T00:00:00+09:00</published><updated>2021-07-28T00:00:00+09:00</updated><id>http://localhost:4000/statistics/2021/07/28/Narrow%20Confidence%20Interval%20for%20low%20N%20&amp;%20small%20p</id><content type="html" xml:base="http://localhost:4000/statistics/2021/07/28/Narrow-Confidence-Interval-for-low-N-&amp;-small-p.html"><![CDATA[<p>최근 Proportion 예측치에 대한 신뢰구간에 대해 생각해 볼 기회가 있었습니다. 어떤 완성된 제품의 판매 이후 기간 내 <strong>누적 불량률</strong>에 대해 예측하는 업무에 참여했는데요! 이 때 점 추청치도 물론 중요하지만, <strong>구간 추청치</strong>에 대한 관심도 이에 못지 않은 것 같습니다. 범위로 표현되다보니 어느 정도의 규모의 불량률이 발생할 수 있는가에 대한 관심이라고 생각합니다.</p>
+
+<p>이때 문제가 되었던 건 제품의 출시 초기, 즉, 누적 불량률 proportion에서 <strong>n이 적을 때</strong>의 신뢰 구간이 <em>매우 크게 벌어진다</em>는 것입니다. 따라서 예측치로서의 가치가  퇴색되는 문제가 있습니다. 이에 초기 불량률 예측에서도 나름대로 적정한 범위를 갖는 신뢰구간을 제시하기 위해 고민해본 결과를 정리해보겠습니다.</p>
+
+<h3 id="problem-setting">Problem setting</h3>
+
+<p>앞 서 간단하게 설명한 문제를 구체적인 토이 데이터를 가지고 정의해보겠습니다. (본 포스팅에서 제시되는 데이터는 실제 데이터가 아니며 실제 데이터의 특성을 반영하여 임의로 생성된 데이터입니다.)</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">timestamp</th>
+      <th style="text-align: center">x_cumulative</th>
+      <th style="text-align: center">n_cumulative</th>
+      <th style="text-align: center">proportion</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">21-04-01 0시</td>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center">37</td>
+      <td style="text-align: center">0.11</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">21-04-01 6시</td>
+      <td style="text-align: center">7</td>
+      <td style="text-align: center">76</td>
+      <td style="text-align: center">0.09</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">21-04-01 12시</td>
+      <td style="text-align: center">11</td>
+      <td style="text-align: center">123</td>
+      <td style="text-align: center">0.09</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">21-04-01 18시</td>
+      <td style="text-align: center">15</td>
+      <td style="text-align: center">168</td>
+      <td style="text-align: center">0.08</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">21-04-02 0시</td>
+      <td style="text-align: center">20</td>
+      <td style="text-align: center">216</td>
+      <td style="text-align: center">0.09</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">21-04-02 6시</td>
+      <td style="text-align: center">25</td>
+      <td style="text-align: center">264</td>
+      <td style="text-align: center">0.10</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">…</td>
+      <td style="text-align: center">…</td>
+      <td style="text-align: center">…</td>
+      <td style="text-align: center">…</td>
+    </tr>
+  </tbody>
+</table>
+
+<p align="center">
+  <img src="https://decision-J.github.io/assets/statistics/CI_lowN/data.png" alt="누적 불량률" />
+</p>
+
+<p>위 데이터는 2021년 4월 1일부터 4월 8일까지 1주일간 6시간에 한번씩 제품의 <strong>누적 불량률 예측치</strong>를 기록한 것입니다. x는 불량이 일어난 제품의 수를 뜻하고 n은 출시된 전체 제품 수입니다. proportion은 이들의 비율로서 불량률에 해당하며 테이블에 기록된 내용들을 전부 어떤 모델로 예측했다고 가정해보겠습니다.</p>
+
+<p>예측된 누적 불량률의 신뢰구간을 구해보겠습니다. 우선 가장 기본인 정규 근사를 이용한 비율 신뢰구간을 적용해보겠습니다.</p>
+
+<p>$$
+\begin{gathered}
+CI_{normal} = \hat{p} \pm z\sqrt{\frac{\hat{p}(1-\hat{p})}{n}}
+\end{gathered}
+$$</p>
+
+<p align="center">
+  <img src="https://decision-J.github.io/assets/statistics/CI_lowN/CI.png" alt="정규근사 신뢰구간" />
+</p>
+
+<p>서두에서 말씀드린 것처럼 4월 1일의 <em>초기 예측 불량률에 대한 구간</em>이 위아래로 크게 벌어진 것을 확인할 수 있습니다. 이후 4월 3일 경부터 n이 누적되어 커지면서 구간이 안정을 찾는 것을 확인할 수 있네요! 저는 저 초기 불량률에 대한 신뢰구간을 적정하게 줄여서 활용 가능성을 높이고 싶었습니다.</p>
+
+<p>그래서 생각한 것이 예측된 값의 특성을 반영해주면 좋겠다는 것이었습니다. 불량률의 모습을 살펴보시면 p가 작음을 확인할 수 있습니다. 불량률이나 연체율 등의 <em>나쁜 비율</em>들에서 흔히 나타나는 imbalance 특성인데요! 이를 반영하여 구간을 도출하면 좀 더 개선된 구간이 도출될 수 있지 않을까 생각했습니다.</p>
+
+<p>여기까지 진행되었을 때 떠올랐던 것이 바로 <strong>Bayesian Credible Interval</strong>이었습니다. Bayesian Interval은 Bayesian inference를 통해서 posterior의 분포를 이용하여 p의 interval을 계산해주는 방법입니다. 이 때 prior를 통해서 불량률의 사전 정보를 반영해줄 수 있으니 low p에 대한 정보를 반영할 수 있다고 생각했습니다!</p>
+
+<h3 id="jeffreys-prior">Jeffrey’s Prior</h3>
+
+<p>우선 Bayesian Interval 중에서 가장 유명한 <strong>Jeffrey’s prior</strong>부터 적용해보겠습니다. Jeffrey prior는 $$Beta(1/2, 1/2)$$을 prior로 주는 것인데요. Beta분포 자체가 0~1 사이의 proportion에 대한 정보를 담고 있는 분포니까 prior로서 적합합니다.</p>
+
+<p>(* 사실 Bayesian Credible Interval은 Confidence Interval과 살짝 다른 개념이긴 하지만 대체로 비슷하므로 그냥 사용하겠습니닷)</p>
+
+<p>(* low p를 반영해준다고 하고 jeffrey를 먼저 적용하는 건 말이 안되지만 (뒤에서 설명) 비교를 위해서 먼저 적용해보았습니닷)</p>
+
+<p>Interval을 구하는 수식과 실제 계산 결과는 다음과 같습니다.</p>
+
+<p>$$
+\begin{gathered}
+CI_{jeffrey} = [Beta(\alpha/2; x+1/2, n-x+1/2),Beta(1-\alpha/2; x+1/2, n-x+1/2)]
+\end{gathered}
+$$</p>
+
+<p align="center">
+  <img src="https://decision-J.github.io/assets/statistics/CI_lowN/jeffrey.png" alt="jeffrey 신뢰구간" />
+</p>
+
+<p>분홍색으로 구해진 것이 jeffrey prior를 통해 구한 Interval인데요. 기존 신뢰구간에 비해 살짝 작아지긴 했지만 여전히 초기 불량률에 대한 구간이 벌어져있네요 ㅠㅠ 제가 생각한 Jeffrey prior의 문제는 다음과 같습니다.</p>
+
+<p align="center">
+  <img src="https://decision-J.github.io/assets/statistics/CI_lowN/jeffrey_prior.png" alt="jeffrey prior" />
+</p>
+
+<p>Jeffrey prior의 모습입니다. Low p에 대한 density도 높지만 Large p에 대한 density도 높은 것을 확인할 수 있습니다. 저희의 불량률 데이터는 large p가 나올 수 없는(정확히는 나오면 안되는 ^^;;) 형태이기 때문에 prior의 형태를 수정할 필요가 있어보입니다!</p>
+
+<h3 id="modified-prior">Modified Prior</h3>
+
+<p>그래서 prior로 사용되고 있는 Beta 분포에서 parameter를 바꿔줬습니다. Jeffrey의 0.5, 0.5가 아니라 <strong>0.05, 35</strong>를 parameter로 갖는 beta 분포를 prior로 사용해보겠습니다.</p>
+
+<p align="center">
+  <img src="https://decision-J.github.io/assets/statistics/CI_lowN/mod_prior.png" alt="Modified prior" />
+</p>
+
+<p>수정된 prior의 모습은 위와 같습니다. small p에 대한 density만이 높게 잡히는 형태로 되어있음을 확인할 수 있습니다! 이러한 사전 정보를 가지고 Interval을 계산하면 수식이 다음과 같이 변경됩니다.</p>
+
+<p>$$
+\begin{gathered}
+CI_{mod} = [Beta(\alpha/2; x+0.05, n-x+35),Beta(1-\alpha/2; x+0.05, n-x+35)]
+\end{gathered}
+$$</p>
+
+<p>이제 준비는 끝났습니다! 계산된 Interval의 결과를 보시죠!</p>
+
+<p align="center">
+  <img src="https://decision-J.github.io/assets/statistics/CI_lowN/CI_mod.png" alt="Modified 신뢰구간" />
+</p>
+
+<p>초록색 선으로 구해진 것이 modified Interval입니다. 기대 했던대로 다른 구간들에 비해 초기 불량률에 대해 작은 구간으로 define되었음을 확인할 수 있습니다!</p>
+
+<h3 id="limitation">Limitation</h3>
+
+<p>간단하게 small p에 대한 사전 정보를 반영하여 low n의 신뢰 구간을 좁히는 방법을 생각해보았습니다. 이 방법의 개선해야할 부분, 더 생각해볼 지점은 다음과 같습니다.</p>
+
+<ul>
+  <li><strong>prior의 parameter 세팅</strong></li>
+</ul>
+
+<p>modified Interval의 prior는 $$Beta(0.05, 35)$$로 되어있습니다. 이 때 0.05, 35는 어떻게 정해졌을까요? 네, 제가 임의로 정했습니다 ㅎㅎ 하지만 모든 데이터에 대해 임의로 사람이 지정해줄 수는 없는 노릇이니, 이 부분을 결정하는 logic이 필요해보입니다.</p>
+
+<ul>
+  <li><strong>굳이 신뢰구간을 좁혀야 하는가?</strong></li>
+</ul>
+
+<p>“신뢰 구간”이라는 것 자체가 n이 커지면 자연히 좁아지고 n이 작으면 넓어지는 것이 <strong>당연</strong>합니다. 이는 통계적 추론에서 수반되는 불확실성의 반영이기도 합니다. 따라서 n이 작은 기간에 신뢰 구간을 좁히는 것이 <em>필요한</em> 작업인지에 대해서는 업무 내에서의 활용 방안, 분석의 목적에 맞추어 판단해야 될 부분으로 보입니다.</p>
+
+<p>결론적으로 이 방법론은 무조건적인 적용이 아니라 (모든 것이 그렇지만) 때와 장소에 따라서 분석자가 적절히 적용하여 활용하는 것이 가장 좋겠다는 의견입니다! ㅎㅎ</p>
+
+<hr />
+<h3 id="reference">Reference</h3>
+
+<ol>
+  <li>
+    <p><a href="https://en.wikipedia.org/wiki/Binomial_proportion_confidence_interval">Wikipedia “Binomial_proportion_confidence_interval”</a></p>
+  </li>
+  <li>
+    <p><a href="https://projecteuclid.org/journals/annals-of-statistics/volume-30/issue-1/Confidence-Intervals-for-a-binomial-proportion-and-asymptotic-expansions/10.1214/aos/1015362189.full">Brown, Lawrence D., T. Tony Cai, and Anirban DasGupta. “Confidence intervals for a binomial proportion and asymptotic expansions.” <em>The Annals of Statistics</em> 30.1 (2002): 160-201.</a></p>
+  </li>
+  <li>
+    <p><a href="https://stats.stackexchange.com/questions/227107/bayesian-confidence-interval-jeffreys-prior-other-than-the-0-5-centroid">StackExchange about Jeffrey’s prior</a></p>
+  </li>
+</ol>]]></content><author><name>HaeYong Joung</name></author><category term="Statistics" /><category term="Statistics" /><category term="Confidence" /><category term="Interval" /><category term="proportion" /><category term="CI" /><summary type="html"><![CDATA[최근 Proportion 예측치에 대한 신뢰구간에 대해 생각해 볼 기회가 있었습니다. 어떤 완성된 제품의 판매 이후 기간 내 누적 불량률에 대해 예측하는 업무에 참여했는데요! 이 때 점 추청치도 물론 중요하지만, 구간 추청치에 대한 관심도 이에 못지 않은 것 같습니다. 범위로 표현되다보니 어느 정도의 규모의 불량률이 발생할 수 있는가에 대한 관심이라고 생각합니다.]]></summary></entry><entry><title type="html">[CV] YOLO v2</title><link href="http://localhost:4000/papers/2021/07/26/Yolo_v2_review.html" rel="alternate" type="text/html" title="[CV] YOLO v2" /><published>2021-07-26T00:00:00+09:00</published><updated>2021-07-26T00:00:00+09:00</updated><id>http://localhost:4000/papers/2021/07/26/Yolo_v2_review</id><content type="html" xml:base="http://localhost:4000/papers/2021/07/26/Yolo_v2_review.html"><![CDATA[<h1 id="paper-review-yolo_v2">[Paper review] YOLO_v2</h1>
+
+<p>이전 포스팅의 <a href="https://decision-j.github.io/computer-vision/2021/05/31/Yolo_review.html">YOLO v1</a>에 후속 버전인 YOLO v2에 대해 리뷰해보고자 합니다.</p>
+
+<p><em>Redmon, Joseph, and Ali Farhadi. “YOLO9000: better, faster, stronger.” Proceedings of the IEEE conference on computer vision and pattern recognition (2017)</em></p>
+
+<p>본 논문의 구성은 독특하게도 <strong>Better, Faster, Stronger</strong>의 세 파트로 구성되어 있습니다.</p>
+
+<p>각각 어떻게 이전 버전을 업데이트하고 발전시켰는 지를 소개하고 있는데요. 하나씩 살펴보겠습니다.</p>
+
+<p>(본 리뷰의 모든 수식과 그림은 원 논문을 참고했습니다.)</p>
+
+<hr />
+
+<h3 id="better">Better</h3>
+
+<p>제목에서부터 느낌이 오듯이 <strong>Better</strong> 파트에서는 이전 YOLO v1의 <u>성능 개선</u>이 주요 포인트입니다.  저자는 YOLO v1의 주요 문제점으로 두 가지를 꼽는데요, <em>Localization 오류</em>와 <em>Low recall</em>입니다. YOLO v2에서는 이를 해결하기 위한 다양한 방법들이 소개되고 있습니다. 그 중에서도 주요 포인트들만 공부해보겠습니다.</p>
+
+<ul>
+  <li><strong>Convolutional With Anchor Boxes</strong></li>
+</ul>
+
+<p>YOLO에서는 output을 위한 final layer가 fully connected layer였습니다. YOLO v2에서는 이를 Faster R-CNN 등 다른 모델들과 같이 Convolutional layer로 바꿨습니다. 또한 각 region domain에서 object class를 정했었는데 이를 Anchor box를 도입하여 대체했습니다. Anchor box는 임의로 배치된 box들의 정보를 통해 도움을 받아 object를 detection하는 방법입니다. YOLO에서는 v2에서 최초로 적용되었네요! 이는 지난 포스팅에서도 언급했었던 YOLO v1의 regional based approach의 한계점을 개선하는 효과가 있습니다.</p>
+
+<p>YOLO v2는 Anchor box도입으로 정확성 측면에선 다소 떨어졌지만 (기존 region based predict에서 보다 box의 숫자들이 상당히 많이 늘어나기 때문에 accuracy 측면에선 불리합니다.) <u>recall 측면</u>에서 81%에서 <strong>88%</strong>까지 개선이 이루어졌습니다.</p>
+
+<ul>
+  <li><strong>Dimension Clusters</strong></li>
+</ul>
+
+<p>Anchor box를 도입하고나니 문제가 생겼습니다. 얼마나 많은 Anchor box를 설정할지, 어떤 위치에 설정할지를 결정해야 하는 것이죠! 기존의 모델들은 사람이 임의로 <em>hand-picked</em>의 방식으로 이를 설정해주었습니다. 본 논문에서는 training set의 box들의 centroid 좌표를 이용하여 <strong>K-means clustering</strong>을 통해 Anchor box의 사전 정보(논문에서 prior)를 결정해줍니다.</p>
+
+<p>이 때, 기존의 K-means처럼 Euclidean distance를 이용하면 아무래도 면적이 큰, centroid와 박스 coordinate의 거리가 큰 box들은 문제가 생길 여지가 많기 때문에 custom distance를 사용합니다. 이를 <em>Average IOU</em>라 부릅니다.</p>
+
+<p>$$
+\begin{gathered}
+d(box, centroid) = 1-IOU(box, centroid)
+\end{gathered}
+$$</p>
+
+<p align="center">
+  <img src="https://decision-J.github.io/assets/computer_vision/YOLO_v2/kmeans.PNG" alt="K 결정하기" />
+</p>
+
+<p>위 플랏을 보시면 k가 5일 때 비교적 높은 Avg. IOU를 기록함을 확인할 수 있습니다. 저자들은 model의 complexity를 낮추면서 가장 높은 IOU를 담보할 수 있는 k값이 5라고 생각하고 Anchor box의 사전 개수를 <strong>5개</strong>로 결정했습니다.</p>
+
+<ul>
+  <li><strong>Direct location prediction</strong></li>
+</ul>
+
+<p>Anchor box 도입은 두 번째 문제를 가져옵니다. 바로 모델이 <strong>instable</strong> 할 수 있다는 것입니다. Model은 box의 $$(x,y)$$ 좌표를 예측하게 되는데요. 이 때 아무런 restriction이 없다면 초기값에 따라 매우 불안정하게 box의 위치가 예측되고 (image domain 내에서 큰 변동) 이에 따라 모델이 stable한 결과를 내는데 불리해집니다.</p>
+
+<p>이에 본 논문에서는 아래와 같은 계산을 통해 일종의 restriction을 만듭니다.</p>
+
+<p align="center">
+  <img src="https://decision-J.github.io/assets/computer_vision/YOLO_v2/direct_location_pred.PNG" alt="Direct location prediction" />
+</p>
+
+<p>여기서 $$t_x, t_y, t_w, t_h, t_o$$가 model에서 예측치로 나오는 값들인데요! logistic activation ($$\sigma$$) 등을 통해서 <strong>$$b_x, b_y, b_w, b_h$$</strong>로 묶어둠으로써 model의 prediction을 stable하게 유지될 수 있도록 세팅합니다.</p>
+
+<p>저자는 Dimension Clusters와 Direct location prediction 방법을 통해 <strong>5%의 mAP(정확성 지표) 개선</strong>을 얻었다고 설명합니다.</p>
+
+<ul>
+  <li><strong>Multi-Scale Training</strong></li>
+</ul>
+
+<p>YOLO v2는 다양한 size의 이미지들을 robust하게 학습하기 위해서 Multi-Scale training을 적용했습니다. 우선 위에서 살펴본 Anchor Box의 도입의 영향으로 YOLO v2의 <em>기본 input size</em>는 기존 448 x 448에서  416 x 416으로 바뀝니다. 하지만 Multi-Scale training은 매 iteration의 layer input을 <strong>고정하지 않고</strong> 매 10번의 batch가 지날 때마다 320 x 320에서 608 x 608 까지의 32간격으로 input size를 바꾸어 train을 진행합니다. 이렇게 하면 다양한 size에도 robust한 학습이 가능하며, 다양한 resolution의 이미지에 대해서도 학습이 가능하다는 장점이 있습니다.</p>
+
+<p>이 포스팅에서 다 다루지는 않았지만 이 외에도 Batch-normalization, Passthrough layer 등을 통해 YOLO v1 대비 mAP를 개선시켰습니다. VOC2007 mAP기준 63.4에서 <strong>78.6</strong>까지 높아졌음을 알 수 있네요!</p>
+
+<p align="center">
+  <img src="https://decision-J.github.io/assets/computer_vision/YOLO_v2/mAP_up.PNG" alt="YOLO v2 짱짱 than YOLO v1" />
+</p>
+
+<h3 id="faster">Faster</h3>
+
+<p>안그래도 기존 detection method들 대비 속도가 뛰어났던 YOLO v1이었는데 <em>Faster</em>라니.. 어떻게 했을지 확인해보겠습니다.</p>
+
+<ul>
+  <li><strong>Darknet-19</strong></li>
+</ul>
+
+<p>YOLO v2가 발표될 당시 많은 detection method들은 base feature extractor scheme으로 VGG-16을 많이 사용하고 있었습니다. VGG-16은 계산량이 많기 때문에 빠른 스피드를 담보할 수 없는데요. 이에 저자들은 <em>Googlenet architecture</em>를 기반으로 독자적인 custom model을 만들어 사용했습니다. 그 것이 바로 <strong>Darknet-19</strong>입니다.</p>
+
+<p>Darkent 19는 <strong>19 개의 convolutional layer와 5개의 maxpooling layer</strong>로 이루어진 구조를 가지고 있습니다. 저자는 이를 통해 정확도는 90.0% (VGG-16) 에서 88.0%로 매우 미세하게 줄어들었지만, 계산량 자체는 30.69 billion에서 8.52 billion으로 매우 줄어들어 훨씬 빠른 속도를 담보할 수 있다고 설명합니다.</p>
+
+<p>이 외에도 <strong>Classification과 Detection을 위한 train과정을 각각 진행</strong>함으로써 model의 학습 및 예측 속도를 높였습니다.</p>
+
+<h3 id="stronger">Stronger</h3>
+
+<p>Stronger 파트는 제가 이 논문을 읽으면서 가장 흥미롭게 느꼈던 부분입니다. 앞서 Faster 파트에서 YOLO v2는 Classification과 Detection 과정을 따로 train한다고 언급했는데요! Classification을 training하는 ImageNet 1000 class classification dataset은 이름에서 알 수 있듯이 <strong>1,000개의 class</strong>가 존재합니다. 이에 비해 detection dataset은 <strong>20개의 class</strong>만 존재하기 때문에 matching이 되지 않죠! 이 부분을 해결해주는 파트가 Stronger입니다.</p>
+
+<p>Class의 차이가 난다는 것이 어떤 문제점을 가져오는지 논문에서 예시로 설명하고 있습니다. 예를 들어, detection dataset에는 <em>“DOG”</em>이라는 class밖에 없는데, classification dataset에는 <em>“Norfolk terrier”, “Yorkshire terrier”,  “Bedlington terrier”</em> 등의 보다 세분화된 class들이 존재한다는 것이죠! 이러한 문제를 해결해주기 위해서 저자는  <strong>Hierarchical tree</strong>를 사용합니다. Hierarchical tree의 개념은 아래 그림을 보면 좀 더 쉽게 알 수 있습니다.</p>
+
+<p align="center">
+  <img src="https://decision-J.github.io/assets/computer_vision/YOLO_v2/tree.PNG" alt="Hierarchical Word Tree" />
+</p>
+
+<p>가장 상위 node에 Pyhsical object라고 하는 가장 큰 개념이 속해져있고 그 아래로 카테고리가 나눠지면서 단어들이 분류되어 위치하는 것을 확인할 수 있습니다. 이렇게 Tree를 만드는 목적 중 가장 중요한 것은 <strong>Probability</strong>를 계산할 수 있게 된다는 것입니다. Tree를 사용하지 않는다면 Classification object에서 <em>Norfolk terrier</em>가 나왔을 때 detection probability가 어떻게 계산될 지 알 수 없습니다. 하지만 tree를 이용한다면 root node로부터의 <strong>조건부 확률</strong>을 이용하여 간접적으로 확률을 구할 수 있게 됩니다!</p>
+
+<p>$$
+P(\textit{Norfolk terrier})=P(\textit{Norfolk terrier }|\textit{ terrier}) * P(\textit{terrier }|\textit{ dog}) *\cdot\cdot\cdot * P(\textit{animal } | \textit{Physical Object})
+$$</p>
+
+<p>위의 수식을 보면 한결 이해하기가 쉽습니다. 이 때 제일 꼭대기 노드인 $$P(\textit{Physical Object})=1$$임을 가정합니다. 이런 식으로 구성된 확률 값을 가지고 dataset이 classification이라면 architecture의 classification 부분의 loss function으로 update하고 detection이라면 전체 모델의 loss function을 가지고 update해주게 됩니다.</p>
+
+<p>이러한 class의 matching 및 확장은 굉장히 흥미로웠습니다. class의 규모가 다른 dataset들을 가지고 얼마든지 병합해서 training을 진행할 수 있다는 점에서 좋은 아이디어라고 느꼈습니다.</p>
+
+<h3 id="experiment-results">Experiment Results</h3>
+<p>이러한 노력들로 YOLO v2가 얼마나 업그레이드 되었는지 수치로 비교한 결과를 살펴보겠습니다.</p>
+
+<p align="center">
+  <img src="https://decision-J.github.io/assets/computer_vision/YOLO_v2/result.PNG" alt="Performance comparison with other detectors from PASCAL VOC 2007, 2012" />
+</p>
+
+<p>전작인 YOLO v1의 63.6 mAP에 비하여 상당히 발전된 <strong>78.6</strong>을 기록한 것을 확인할 수 있네요! FPS 속도도 45에서 <strong>40</strong>으로 한결 더 빨라졌습니다!</p>
+
+<hr />
+<h3 id="reference">Reference</h3>
+
+<ol>
+  <li>
+    <p>Paper: <a href="https://arxiv.org/pdf/1612.08242.pdf">Redmon, Joseph, and Ali Farhadi. “YOLO9000: better, faster, stronger.” Proceedings of the IEEE conference on computer vision and pattern recognition (2017)</a></p>
+  </li>
+  <li>
+    <p><a href="https://taeu.github.io/paper/deeplearning-paper-yolov2/">https://taeu.github.io/paper/deeplearning-paper-yolov2/</a></p>
+  </li>
+</ol>]]></content><author><name>HaeYong Joung</name></author><category term="Papers" /><category term="CV" /><category term="object-detection" /><category term="yolo" /><summary type="html"><![CDATA[[Paper review] YOLO_v2]]></summary></entry><entry><title type="html">[Kaggle] Google AI Open Images - Object Detection Track</title><link href="http://localhost:4000/competition/2021/07/15/Google-AI-Open-Images-Object-Detection-Track.html" rel="alternate" type="text/html" title="[Kaggle] Google AI Open Images - Object Detection Track" /><published>2021-07-15T00:00:00+09:00</published><updated>2021-07-15T00:00:00+09:00</updated><id>http://localhost:4000/competition/2021/07/15/Google%20AI%20Open%20Images%20-%20Object%20Detection%20Track</id><content type="html" xml:base="http://localhost:4000/competition/2021/07/15/Google-AI-Open-Images-Object-Detection-Track.html"><![CDATA[<h2 id="kaggle-study-2---google-ai-open-images---object-detection-track">Kaggle Study #2. - Google AI Open Images - Object Detection Track</h2>
+
+<p>Object Detection에 대한 논문을 읽어가면서 이를 실제 데이터로 적용해보고 싶다는 생각에 과거 kaggle competition을 찾아보았습니다. 그래서 발견한 것이 2018년 진행된  <em>Google AI Open Images - Object Detection Track</em> 이었습니다. 3년전 대회이긴 하지만 discussion들이나 코드들을 참고하면서 공부할 목적으로 선택해보았습니다.</p>
+
+<hr />
+<h3 id="대회-overview">대회 Overview</h3>
+<p>먼저 <em>Google AI Open Images - Object Detection Track</em>에 대해 간단히 정리해보겠습니다.
+본 대회는 99,999장의 test 이미지 파일에 대해서 object detection을 수행하는 것이 목적입니다.</p>
+
+<p align="center">
+  <img src="https://decision-J.github.io/assets/kaggle_google_object_detection/overview.png" alt="Example annotations: the house by anita kluska" />
+</p>
+
+<p>Detecting을 제대로 해냈는지 평가하는 지표로 3가지를 살펴봅니다. <strong>Detecting한 object의 category, Box의 좌표, Confidence</strong>입니다. 즉, 이미지 내의 사물을 인식하고, 그 위치를 정확히 포착하고, 이에 대한 예측 확률이 높아야 좋은 rating을 받는 것이죠!</p>
+
+<p>이미지 데이터에 대한 자세한 설명은 <a href="https://storage.googleapis.com/openimages/web/challenge.html">Open Images Challenge page</a>에서 확인할 수 있습니다!</p>
+
+<h3 id="how-to">How to?</h3>
+<p>이 문제에 적용해보고 싶은 모델은 YOLO v3입니다.
+최근 YOLO 논문들을 version별로 살펴보고 있는데 실제로 얼마나 빠르고 정확한지 확인해보고 싶었거든요!</p>
+
+<p>여러 구현 방법들이 있지만 제가 선택한 방법은 <strong>darknet</strong>을 이용하는 것입니다. 실제 대회 참가가 아니고 우수 코드들을 보면서 공부하는 것이 목적이기 때문에, 우선 제 결과물은 빠르게 내는 것이 중요하다고 생각했습니다. <strong>darknet</strong>은 open source neural network framework로 <strong>C와 CUDA</strong>를 기반으로 짜여져 있어 매우 빠르면서도 코드를 파이썬에서도 쉽게 돌릴 수 있기 때문에 선택하게 되었습니다.</p>
+
+<p>코드는 <a href="https://github.com/AlexeyAB/darknet">AlexeyAB</a>의 darknet코드 깃헙을 clone하여 사용했습니다. 그리고 darknet을 make하기 전에 제 환경에 맞게 <strong>두 가지 customizing</strong>을 해주었습니다.</p>
+
+<ol>
+  <li><strong>Makefile 수정</strong></li>
+</ol>
+
+<p>깃헙 코드를 clone하면 그 안에 Makefile이라는 이름의 파일이 생성됩니다. 여러 옵션들을 지정할 수 있는 파일인데요. 저는 <em>GPU, CUDNN, CUDNN_HALF, OPENCV</em> 항목을 1로 바꾸어 주었습니다. (기존은 0) 이렇게 해야 GPU를 사용하여 detecting 할 수 있거든요!</p>
+
+<ol>
+  <li><strong>detector.c 수정</strong></li>
+</ol>
+
+<p>src 폴더 내의 detector.c라고 하는 c언어 코드를 일부 수정했습니다. AlexeyAB의 darknet 실행 코드는 몇 가지 옵션을 지정할 수 있습니다. 그 중에서 <em>save_labels</em>를 추가하면 detecting한 box의 정보들을 저장해줍니다. 이 때, detecting한 class의 id와 box의 가로 세로 정보가 default로 저장됩니다. 대회의 제출물에 필요한 정보는 class_id, xmin, ymin, xmax, ymax, confidence 값이기 때문에 이 정보들이 저장되도록 코드를 수정했습니다.</p>
+
+<p><strong>참고</strong>: detector.c를 수정하는 과정에서 <em>conflicting types for</em> 오류가 나면서 <em>detecor.o를 build하는 데 실패</em>하는 문제가 나타났습니다. 리눅스에서 종종 발생하는 문제라는데.. 이리저리 찾아보면서 헤맸는데 갑작스럽게 저절로 해결되었네요;; 지속적으로 이런 문제가 발생한다면 뭔가 조치가 필요할 것 같습니다.</p>
+
+<pre><code class="language-C">// pseudo labeling concept - fast.ai
+if (save_labels){
+    char labelpath[4096];
+    replace_image_to_label(input, labelpath);
+
+    FILE* fw = fopen(labelpath, "wb");
+    int i;
+    for (i = 0; i &lt; nboxes; ++i) {
+        char buff[1024];
+        int class_id = -1;
+        float prob = 0;
+        for (j = 0; j &lt; l.classes; ++j) {
+            if (dets[i].prob[j] &gt; thresh &amp;&amp; dets[i].prob[j] &gt; prob) {
+                prob = dets[i].prob[j];
+                class_id = j;
+            }
+        }
+        if (class_id &gt;= 0) {
+            sprintf(buff, "%d %2.4f %2.4f %2.4f %2.4f %2.4f\n", class_id,
+            prob, #add for confidence
+            dets[i].bbox.x - dets[i].bbox.w / 2., #add for xmin
+            dets[i].bbox.y - dets[i].bbox.h / 2., #add for ymin
+            dets[i].bbox.x + dets[i].bbox.w / 2., #add for xmax
+            dets[i].bbox.y + dets[i].bbox.h / 2.); #add for ymax
+            fwrite(buff, sizeof(char), strlen(buff), fw);
+        }
+    }
+    fclose(fw);
+</code></pre>
+
+<p>이제 다 됐습니다. 아래 실행 코드를 통해 test 이미지들에 대한 detecting을 수행하기만 하면 됩니다!</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">!</span><span class="p">.</span><span class="o">/</span><span class="n">darknet</span> <span class="n">detector</span> <span class="n">test</span> <span class="p">.</span><span class="o">/</span><span class="n">cfg</span><span class="o">/</span><span class="n">openimages</span><span class="p">.</span><span class="n">data</span> <span class="p">.</span><span class="o">/</span><span class="n">cfg</span><span class="o">/</span><span class="n">yolov3</span><span class="o">-</span><span class="n">openimages</span><span class="p">.</span><span class="n">cfg</span> <span class="n">yolov3</span><span class="o">-</span><span class="n">openimages</span><span class="p">.</span><span class="n">weights</span> <span class="o">-</span><span class="n">dont_show</span> <span class="o">&lt;</span> <span class="p">.</span><span class="o">/</span><span class="n">train</span><span class="p">.</span><span class="n">txt</span> <span class="o">&gt;</span> <span class="n">result</span><span class="p">.</span><span class="n">txt</span> <span class="o">-</span><span class="n">save_labels</span>
+</code></pre></div></div>
+
+<p>잘 진행되는지 궁금하니까 한 장에 대해서만 수행 결과를 확인해보도록 하겠습니다. 아래 사진은 99,999장의 test 이미지 중 한 장을 가져온 것입니다.</p>
+
+<p align="center">
+  <img src="https://decision-J.github.io/assets/kaggle_google_object_detection/test.jfif" alt="test image; 3bc4e7965d04d91f.jpg" />
+</p>
+
+<p>위 사진을 가지고 실행코드를 돌려보면 아래와 같은 실행 결과를 얻을 수 있습니다.</p>
+
+<pre style="auto">
+<code>
+  /content/darknet
+   CUDA-version: 11000 (11020), cuDNN: 7.6.5, CUDNN_HALF=1, GPU count: 1  
+   CUDNN_HALF=1
+   OpenCV version: 3.2.0
+   0 : compute_capability = 600, cudnn_half = 0, GPU: Tesla P100-PCIE-16GB
+  net.optimized_memory = 0
+  mini_batch = 1, batch = 1, time_steps = 1, train = 0
+     layer   filters  size/strd(dil)      input                output
+     0 Create CUDA-stream - 0
+   Create cudnn-handle 0
+  conv     32       3 x 3/ 1    608 x 608 x   3 -&gt;  608 x 608 x  32 0.639 BF
+     1 conv     64       3 x 3/ 2    608 x 608 x  32 -&gt;  304 x 304 x  64 3.407 BF
+     2 conv     32       1 x 1/ 1    304 x 304 x  64 -&gt;  304 x 304 x  32 0.379 BF
+     3 conv     64       3 x 3/ 1    304 x 304 x  32 -&gt;  304 x 304 x  64 3.407 BF
+     4 Shortcut Layer: 1,  wt = 0, wn = 0, outputs: 304 x 304 x  64 0.006 BF
+     5 conv    128       3 x 3/ 2    304 x 304 x  64 -&gt;  152 x 152 x 128 3.407 BF
+     6 conv     64       1 x 1/ 1    152 x 152 x 128 -&gt;  152 x 152 x  64 0.379 BF
+     7 conv    128       3 x 3/ 1    152 x 152 x  64 -&gt;  152 x 152 x 128 3.407 BF
+     8 Shortcut Layer: 5,  wt = 0, wn = 0, outputs: 152 x 152 x 128 0.003 BF
+     9 conv     64       1 x 1/ 1    152 x 152 x 128 -&gt;  152 x 152 x  64 0.379 BF
+    10 conv    128       3 x 3/ 1    152 x 152 x  64 -&gt;  152 x 152 x 128 3.407 BF
+    11 Shortcut Layer: 8,  wt = 0, wn = 0, outputs: 152 x 152 x 128 0.003 BF
+    12 conv    256       3 x 3/ 2    152 x 152 x 128 -&gt;   76 x  76 x 256 3.407 BF
+    13 conv    128       1 x 1/ 1     76 x  76 x 256 -&gt;   76 x  76 x 128 0.379 BF
+    14 conv    256       3 x 3/ 1     76 x  76 x 128 -&gt;   76 x  76 x 256 3.407 BF
+    15 Shortcut Layer: 12,  wt = 0, wn = 0, outputs:  76 x  76 x 256 0.001 BF
+    16 conv    128       1 x 1/ 1     76 x  76 x 256 -&gt;   76 x  76 x 128 0.379 BF
+    17 conv    256       3 x 3/ 1     76 x  76 x 128 -&gt;   76 x  76 x 256 3.407 BF
+    18 Shortcut Layer: 15,  wt = 0, wn = 0, outputs:  76 x  76 x 256 0.001 BF
+    19 conv    128       1 x 1/ 1     76 x  76 x 256 -&gt;   76 x  76 x 128 0.379 BF
+    20 conv    256       3 x 3/ 1     76 x  76 x 128 -&gt;   76 x  76 x 256 3.407 BF
+    21 Shortcut Layer: 18,  wt = 0, wn = 0, outputs:  76 x  76 x 256 0.001 BF
+    22 conv    128       1 x 1/ 1     76 x  76 x 256 -&gt;   76 x  76 x 128 0.379 BF
+    23 conv    256       3 x 3/ 1     76 x  76 x 128 -&gt;   76 x  76 x 256 3.407 BF
+    24 Shortcut Layer: 21,  wt = 0, wn = 0, outputs:  76 x  76 x 256 0.001 BF
+    25 conv    128       1 x 1/ 1     76 x  76 x 256 -&gt;   76 x  76 x 128 0.379 BF
+    26 conv    256       3 x 3/ 1     76 x  76 x 128 -&gt;   76 x  76 x 256 3.407 BF
+    27 Shortcut Layer: 24,  wt = 0, wn = 0, outputs:  76 x  76 x 256 0.001 BF
+    28 conv    128       1 x 1/ 1     76 x  76 x 256 -&gt;   76 x  76 x 128 0.379 BF
+    29 conv    256       3 x 3/ 1     76 x  76 x 128 -&gt;   76 x  76 x 256 3.407 BF
+    30 Shortcut Layer: 27,  wt = 0, wn = 0, outputs:  76 x  76 x 256 0.001 BF
+    31 conv    128       1 x 1/ 1     76 x  76 x 256 -&gt;   76 x  76 x 128 0.379 BF
+    32 conv    256       3 x 3/ 1     76 x  76 x 128 -&gt;   76 x  76 x 256 3.407 BF
+    33 Shortcut Layer: 30,  wt = 0, wn = 0, outputs:  76 x  76 x 256 0.001 BF
+    34 conv    128       1 x 1/ 1     76 x  76 x 256 -&gt;   76 x  76 x 128 0.379 BF
+    35 conv    256       3 x 3/ 1     76 x  76 x 128 -&gt;   76 x  76 x 256 3.407 BF
+    36 Shortcut Layer: 33,  wt = 0, wn = 0, outputs:  76 x  76 x 256 0.001 BF
+    37 conv    512       3 x 3/ 2     76 x  76 x 256 -&gt;   38 x  38 x 512 3.407 BF
+    38 conv    256       1 x 1/ 1     38 x  38 x 512 -&gt;   38 x  38 x 256 0.379 BF
+    39 conv    512       3 x 3/ 1     38 x  38 x 256 -&gt;   38 x  38 x 512 3.407 BF
+    40 Shortcut Layer: 37,  wt = 0, wn = 0, outputs:  38 x  38 x 512 0.001 BF
+    41 conv    256       1 x 1/ 1     38 x  38 x 512 -&gt;   38 x  38 x 256 0.379 BF
+    42 conv    512       3 x 3/ 1     38 x  38 x 256 -&gt;   38 x  38 x 512 3.407 BF
+    43 Shortcut Layer: 40,  wt = 0, wn = 0, outputs:  38 x  38 x 512 0.001 BF
+    44 conv    256       1 x 1/ 1     38 x  38 x 512 -&gt;   38 x  38 x 256 0.379 BF
+    45 conv    512       3 x 3/ 1     38 x  38 x 256 -&gt;   38 x  38 x 512 3.407 BF
+    46 Shortcut Layer: 43,  wt = 0, wn = 0, outputs:  38 x  38 x 512 0.001 BF
+    47 conv    256       1 x 1/ 1     38 x  38 x 512 -&gt;   38 x  38 x 256 0.379 BF
+    48 conv    512       3 x 3/ 1     38 x  38 x 256 -&gt;   38 x  38 x 512 3.407 BF
+    49 Shortcut Layer: 46,  wt = 0, wn = 0, outputs:  38 x  38 x 512 0.001 BF
+    50 conv    256       1 x 1/ 1     38 x  38 x 512 -&gt;   38 x  38 x 256 0.379 BF
+    51 conv    512       3 x 3/ 1     38 x  38 x 256 -&gt;   38 x  38 x 512 3.407 BF
+    52 Shortcut Layer: 49,  wt = 0, wn = 0, outputs:  38 x  38 x 512 0.001 BF
+    53 conv    256       1 x 1/ 1     38 x  38 x 512 -&gt;   38 x  38 x 256 0.379 BF
+    54 conv    512       3 x 3/ 1     38 x  38 x 256 -&gt;   38 x  38 x 512 3.407 BF
+    55 Shortcut Layer: 52,  wt = 0, wn = 0, outputs:  38 x  38 x 512 0.001 BF
+    56 conv    256       1 x 1/ 1     38 x  38 x 512 -&gt;   38 x  38 x 256 0.379 BF
+    57 conv    512       3 x 3/ 1     38 x  38 x 256 -&gt;   38 x  38 x 512 3.407 BF
+    58 Shortcut Layer: 55,  wt = 0, wn = 0, outputs:  38 x  38 x 512 0.001 BF
+    59 conv    256       1 x 1/ 1     38 x  38 x 512 -&gt;   38 x  38 x 256 0.379 BF
+    60 conv    512       3 x 3/ 1     38 x  38 x 256 -&gt;   38 x  38 x 512 3.407 BF
+    61 Shortcut Layer: 58,  wt = 0, wn = 0, outputs:  38 x  38 x 512 0.001 BF
+    62 conv   1024       3 x 3/ 2     38 x  38 x 512 -&gt;   19 x  19 x1024 3.407 BF
+    63 conv    512       1 x 1/ 1     19 x  19 x1024 -&gt;   19 x  19 x 512 0.379 BF
+    64 conv   1024       3 x 3/ 1     19 x  19 x 512 -&gt;   19 x  19 x1024 3.407 BF
+    65 Shortcut Layer: 62,  wt = 0, wn = 0, outputs:  19 x  19 x1024 0.000 BF
+    66 conv    512       1 x 1/ 1     19 x  19 x1024 -&gt;   19 x  19 x 512 0.379 BF
+    67 conv   1024       3 x 3/ 1     19 x  19 x 512 -&gt;   19 x  19 x1024 3.407 BF
+    68 Shortcut Layer: 65,  wt = 0, wn = 0, outputs:  19 x  19 x1024 0.000 BF
+    69 conv    512       1 x 1/ 1     19 x  19 x1024 -&gt;   19 x  19 x 512 0.379 BF
+    70 conv   1024       3 x 3/ 1     19 x  19 x 512 -&gt;   19 x  19 x1024 3.407 BF
+    71 Shortcut Layer: 68,  wt = 0, wn = 0, outputs:  19 x  19 x1024 0.000 BF
+    72 conv    512       1 x 1/ 1     19 x  19 x1024 -&gt;   19 x  19 x 512 0.379 BF
+    73 conv   1024       3 x 3/ 1     19 x  19 x 512 -&gt;   19 x  19 x1024 3.407 BF
+    74 Shortcut Layer: 71,  wt = 0, wn = 0, outputs:  19 x  19 x1024 0.000 BF
+    75 conv    512       1 x 1/ 1     19 x  19 x1024 -&gt;   19 x  19 x 512 0.379 BF
+    76 conv   1024       3 x 3/ 1     19 x  19 x 512 -&gt;   19 x  19 x1024 3.407 BF
+    77 conv    512       1 x 1/ 1     19 x  19 x1024 -&gt;   19 x  19 x 512 0.379 BF
+    78 conv   1024       3 x 3/ 1     19 x  19 x 512 -&gt;   19 x  19 x1024 3.407 BF
+    79 conv    512       1 x 1/ 1     19 x  19 x1024 -&gt;   19 x  19 x 512 0.379 BF
+    80 conv   1024       3 x 3/ 1     19 x  19 x 512 -&gt;   19 x  19 x1024 3.407 BF
+    81 conv   1818       1 x 1/ 1     19 x  19 x1024 -&gt;   19 x  19 x1818 1.344 BF
+    82 yolo
+  [yolo] params: iou loss: mse (2), iou_norm: 0.75, obj_norm: 1.00, cls_norm: 1.00, delta_norm: 1.00, scale_x_y: 1.00
+    83 route  79 		                           -&gt;   19 x  19 x 512
+    84 conv    256       1 x 1/ 1     19 x  19 x 512 -&gt;   19 x  19 x 256 0.095 BF
+    85 upsample                 2x    19 x  19 x 256 -&gt;   38 x  38 x 256
+    86 route  85 61 	                           -&gt;   38 x  38 x 768
+    87 conv    256       1 x 1/ 1     38 x  38 x 768 -&gt;   38 x  38 x 256 0.568 BF
+    88 conv    512       3 x 3/ 1     38 x  38 x 256 -&gt;   38 x  38 x 512 3.407 BF
+    89 conv    256       1 x 1/ 1     38 x  38 x 512 -&gt;   38 x  38 x 256 0.379 BF
+    90 conv    512       3 x 3/ 1     38 x  38 x 256 -&gt;   38 x  38 x 512 3.407 BF
+    91 conv    256       1 x 1/ 1     38 x  38 x 512 -&gt;   38 x  38 x 256 0.379 BF
+    92 conv    512       3 x 3/ 1     38 x  38 x 256 -&gt;   38 x  38 x 512 3.407 BF
+    93 conv   1818       1 x 1/ 1     38 x  38 x 512 -&gt;   38 x  38 x1818 2.688 BF
+    94 yolo
+  [yolo] params: iou loss: mse (2), iou_norm: 0.75, obj_norm: 1.00, cls_norm: 1.00, delta_norm: 1.00, scale_x_y: 1.00
+    95 route  91 		                           -&gt;   38 x  38 x 256
+    96 conv    128       1 x 1/ 1     38 x  38 x 256 -&gt;   38 x  38 x 128 0.095 BF
+    97 upsample                 2x    38 x  38 x 128 -&gt;   76 x  76 x 128
+    98 route  97 36 	                           -&gt;   76 x  76 x 384
+    99 conv    128       1 x 1/ 1     76 x  76 x 384 -&gt;   76 x  76 x 128 0.568 BF
+   100 conv    256       3 x 3/ 1     76 x  76 x 128 -&gt;   76 x  76 x 256 3.407 BF
+   101 conv    128       1 x 1/ 1     76 x  76 x 256 -&gt;   76 x  76 x 128 0.379 BF
+   102 conv    256       3 x 3/ 1     76 x  76 x 128 -&gt;   76 x  76 x 256 3.407 BF
+   103 conv    128       1 x 1/ 1     76 x  76 x 256 -&gt;   76 x  76 x 128 0.379 BF
+   104 conv    256       3 x 3/ 1     76 x  76 x 128 -&gt;   76 x  76 x 256 3.407 BF
+   105 conv   1818       1 x 1/ 1     76 x  76 x 256 -&gt;   76 x  76 x1818 5.376 BF
+   106 yolo
+  [yolo] params: iou loss: mse (2), iou_norm: 0.75, obj_norm: 1.00, cls_norm: 1.00, delta_norm: 1.00, scale_x_y: 1.00
+  Total BFLOPS 148.812
+  avg_outputs = 1358830
+   Allocate additional workspace_size = 52.43 MB
+  Loading weights from yolov3-openimages.weights...
+   seen 64, trained: 32013 K-images (500 Kilo-batches_64)
+  Done! Loaded 107 layers from weights-file
+   Detection layer: 82 - type = 28
+   Detection layer: 94 - type = 28
+   Detection layer: 106 - type = 28
+  ./input/test/3bc4e7965d04d91f.jpg: Predicted in 34.763000 milli-seconds.
+  Person: 28%
+  Person: 42%
+  Man: 32%
+  Clothing: 28%
+  Person: 49%
+  Man: 37%
+  Clothing: 41%
+  Person: 39%
+  Person: 53%
+  Man: 30%
+  Clothing: 34%
+  Person: 35%
+  Person: 55%
+  Clothing: 29%
+</code>
+</pre>
+
+<p>상당히 기나 긴 YOLO의 layer들을 거쳐 최종적으로 <strong>Person, Man, Clothing</strong> object들을 찾아낸 것을 확인할 수 있습니다. 글로만 보면 와닿지 않으니 직접 찾아낸 결과들을 눈으로 확인해볼까요?</p>
+
+<p align="center">
+  <img src="https://decision-J.github.io/assets/kaggle_google_object_detection/test_result.jfif" alt="Detecting Person, Man, Clothing" />
+</p>
+
+<p>매우 빠른 시간 안에 (거의 3~5초?) 저 class들을 찾아주는 것을 알 수 있습니다. YOLO의 장점인 빠른 속도를 느낄 수 있었습니다.</p>
+
+<h3 id="result">Result</h3>
+<p align="center">
+  <img src="https://decision-J.github.io/assets/kaggle_google_object_detection/no_submission.PNG" alt="submission을 만들었는데 왜 제출을 못하니..." />
+</p>
+
+<p>두둥.. submission파일을 열심히 만들고나서야 이걸 깨달았습니다.. 지금 이 대회는 더 이상의 submission을 받지 않고 있네요. 열과 성을 다해 만든 결과물은 아니지만 그래도 제출은 해보고 어느 정도나 rating이 되는지 알고 싶었는데 아쉽습니다 ㅠㅠ</p>
+
+<h3 id="마무리">마무리</h3>
+<p>계속되는 변명같지만 코드 공부가 목적이었기 때문에 빠른 시간 안에 baseline 결과물을 만들어 보았습니다.
+아무래도 pre-trained model만 가지고 아무런 tuning없이 진행하다보니 성능이 그렇게 좋지는 않습니다. 실제로 위의 result 결과를 보면 사람처럼 <u>큰 class를 제외하고는</u> 잘 찾지 못한 모습을 알 수 있습니다. (컴퓨터, 의자, 책상 등은 detecting 실패) 실제 모델을 적용할 때에는 더 세세한 tuning과 train이 필요할 것으로 보입니다.</p>
+
+<hr />
+<h3 id="reference">Reference</h3>
+
+<ol>
+  <li><strong>Kaggle page</strong>: <a href="https://www.kaggle.com/c/google-ai-open-images-object-detection-track/overview">Google AI Open Images - Object Detection Track, 2018</a></li>
+  <li><strong>Data description</strong>: <a href="https://storage.googleapis.com/openimages/web/challenge.html">Open Images Challenge page</a></li>
+  <li><strong>AlexeyAB Darknet source code</strong>: <a href="https://github.com/AlexeyAB/darknet">https://github.com/AlexeyAB/darknet</a></li>
+  <li><strong>Darknet 활용 참고 블로그</strong>: <a href="https://m.blog.naver.com/bigdata-pro/221781790878">https://m.blog.naver.com/bigdata-pro/221781790878</a></li>
+  <li><strong>Codes</strong>: <a href="https://github.com/decision-J/ComputerVision/tree/main/%5BKaggle%5D%20Google%20AI%20Open%20Images%20-%20Object%20Detection%20Track(2018)">decision-j gitgub</a></li>
+</ol>]]></content><author><name>HaeYong Joung</name></author><category term="Competition" /><category term="CV" /><category term="object-detection" /><category term="yolo" /><category term="kaggle" /><summary type="html"><![CDATA[Kaggle Study #2. - Google AI Open Images - Object Detection Track]]></summary></entry><entry><title type="html">[CV] YOLO v1</title><link href="http://localhost:4000/papers/2021/05/31/Yolo_review.html" rel="alternate" type="text/html" title="[CV] YOLO v1" /><published>2021-05-31T00:00:00+09:00</published><updated>2021-05-31T00:00:00+09:00</updated><id>http://localhost:4000/papers/2021/05/31/Yolo_review</id><content type="html" xml:base="http://localhost:4000/papers/2021/05/31/Yolo_review.html"><![CDATA[<h1 id="paper-review-yolo_v1">[Paper review] YOLO_v1</h1>
+
+<p>Object detection에 관한 논문들을 읽어보고자 합니다.
+논문 리스트는 시간 순으로 정리되어 있는 깃헙이 있어 <a href="https://github.com/hoya012/deep_learning_object_detection">이 곳</a>을 참고하여 히스토리를 거슬러 올라가려고 합니다. 너무나 잘 정리가 되어있어 많은 도움을 받고 있습니다.</p>
+
+<p>먼저 가장 궁금했던 <strong>YOLO</strong> 계열의 논문들을 죽 따라가보며 리뷰해볼까 합니다! 가장 첫 번째 버전인 <em>You Only Look Once: Unified, Real-Time Object Detection, Redmon, Joseph, et al. , Proceedings of the IEEE conference on computer vision and pattern recognition (2016)</em> 부터 출발합니다~!</p>
+
+<p>(본 리뷰의 모든 수식과 그림은 원 논문을 참고했습니다.)</p>
+
+<hr />
+
+<h3 id="yolo의-장점">YOLO의 장점</h3>
+
+<p><em>You Only Look Once</em>라는 제목에 걸맞게 YOLO detector가 추구하는 방향은 어느 정도의 정확성을 갖추면서(가장 높은 정확성 x) 다른 detector들보다 훨씬 빠르게 이미지를 판별하는 것입니다. 저자도 YOLO가 “extremly fast”하다며 이를 강조하고 있는데요! 이렇게 빠른 속도가 가능한 이유는 detection model을 일종의 single regression 문제로 단순화 시켰기 때문입니다. YOLO는 주어진 이미지 픽셀을 가지고 <strong>bounding box</strong> (object를 판별하는 네모 범위)의 위치와 이를 나타내는 <strong>class probability</strong> 를 <strong>single convolution</strong> 으로 빠르게 계산합니다. 이 때문에 복잡한 classification pipeline이 필요없으며 YOLO의 계산 속도를 빠르게 만듭니다.</p>
+
+<p align="center">
+  <img src="https://decision-J.github.io/assets/computer_vision/YOLO_v1/single.PNG" alt="YOLO detection system" />
+</p>
+
+<p>YOLO의 <strong>두 번째 장점</strong> 은 이미지 픽셀 조합을 전부 다 들여다보기 때문에 robust하면서도 전체적인 모든 object를 다 찾아낼 수 있다는 것입니다.</p>
+
+<p align="center">
+  <img src="https://decision-J.github.io/assets/computer_vision/YOLO_v1/all_pixel.PNG" alt="YOLO can detect from all image pixel" />
+</p>
+
+<p>위 사진을 보면 YOLO가 전체 이미지 픽셀을 모두 search하여 가장 confidence가 높은 box들을 굵은 표시로 찾아낸 것을 확인할 수 있습니다. 이렇게 모든 pixel 조합들을 탐색할 수 있는 이유는 역시 YOLO가 빠른 속도를 가진 detector이기 때문입니다.</p>
+
+<p>YOLO의 <strong>세 번째 장점</strong> 은 generalizable representation에 대해 학습한다는 것입니다. 논문 후반부에 제시되는 예술 작품에 대한 detector 비교에서 YOLO는 뛰어난 성능을 보여줍니다. 학습한 데이터셋과 특성이 다른 (사진이 아닌 그림인) 예술 작품들에서도 사물을 잘 잡아낸다는 것은 그만큼 object의 general한 특징을 잘 학습한다는 것을 의미합니다. 저자들은 이러한 YOLO의 장점이 <strong>new domain</strong> 에서도 어느 정도의 성능을 담보해줄 수 있다고 기대합니다.</p>
+
+<p align="center">
+  <img src="https://decision-J.github.io/assets/computer_vision/YOLO_v1/general.PNG" alt="YOLO learns generalizable representation" />
+</p>
+
+<h3 id="yolo-methodology">YOLO methodology</h3>
+
+<p align="center">
+  <img src="https://decision-J.github.io/assets/computer_vision/YOLO_v1/method.PNG" alt="YOLO's unified model" />
+</p>
+
+<p>YOLO의 model 매커니즘을 가장 잘 이해할 수 있는 figure입니다. 설명에서 알 수 있듯이 YOLO는 두 가지 도구를 가지고 object detection을 수행합니다. 첫 째, Confidence score가 높은 Bounding box, 둘 째 Class probability가 높은 셀 구역입니다. 먼저 이 두 가지 도구를 갖추기 위해 이미지 픽셀을 <strong>$S * S$ 구역으로 grid하게</strong> 나누어줍니다. 이 구역들의 전체 조합에서 확률 계산을 통해 두 도구를 갖추는 것입니다.</p>
+
+<p>먼저 각 grid cell은 <strong>B개의 Bounding box</strong> 를 예측합니다. B개를 선택하는 기준은 <em>confidence score</em>입니다. confidence score는 bounding box가 object를 담고 있는지, 담고 있다면 얼마나 정확하게 담고 있는지를 나타내는 지표입니다. 이는 Confidence score를 계산하는 식을 살펴보면 더 잘 알 수 있습니다.</p>
+
+<p>$$
+\begin{gathered}
+\textit{Confidence score} = P(Object) \cdot IOU^{truth}_{pred}
+\end{gathered}
+$$</p>
+
+<p><strong>$P(object)$</strong> 는 말 그대로 어떤 object를 담고 있을 확률을 의미합니다. 따라서 이 확률이 낮다면 아무리 IOU가 높아도 Confidence score가 높아질 수 없습니다. 일단 Object를 담고 있을 확률이 높다면 얼마나 정확하게 box가 object 주위를 감싸고 있는지를 알아봐야 합니다. <strong>$IOU^{truth}_{pred}$</strong> 가 바로 그 부분입니다. 이 두 값의 곱이 높은 bounding box를 찾아줌으로써 우리는 object를 가장 잘 둘러싸고 있는 bounding box를 찾아낼 수 있습니다.
+YOLO는 bounding box output으로 box의 좌표값인 $x, y, w, h$ 와 confidence score를 가집니다.</p>
+
+<p>두 번째로 각 cell이 어떤 class를 가질 확률이 높은지 class probability map을 그려줍니다. Conditional probability로 어떠한 Object가 주어졌을 때 어떤 Class를 가질 확률이 높은지 찾아주는 map입니다.</p>
+
+<p>$$
+\begin{gathered}
+\textit{Class probability} = P(Class_i | Object)
+\end{gathered}
+$$</p>
+
+<p>모든 grid cell에 전부 위 확률을 구해주며, 이를 통해 각 cell이 어떤 class를 가질 확률이 높은지 알 수 있습니다. 예시 figure를 살펴보면 강아지가 있는 부분은 하늘색, 자전거는 노랑색, 차량 및 배경은 빨간색 등으로 Class probability가 높은 구역끼리 표현된 것을 확인할 수 있습니다.</p>
+
+<p>종합하면 YOLO는 위 두 도구를 이용하여 <strong>confidence score가 높은 box들을 선택</strong> 한 뒤, 그 box들에 포함된 grid cell들이 <strong>어떤 class에 들어갈 확률이 높은지</strong> 파악하여 그 class로 detection하는 매커니즘을 가지고 있습니다. 이에 YOLO의 prediction은 $S * S * (B * 5 + C)$ 의 tensor 구조를 갖게 됩니다.($C = classes$)</p>
+
+<h3 id="network-design">Network design</h3>
+<p>그렇다면 이런 매커니즘을 수행하는 Network는 어떤 아키텍처를 가지고 있을까요?
+빠른 수행을 요하는 YOLO인만큼 꽤 단순한 구조를 가지고 있습니다. 저자들은 GoogLeNet을 참고하여 <strong>24개의 convolutional layer를 가지고 2개의 fully connected layer</strong> 가 붙는 구조를 만들었습니다.</p>
+
+<p align="center">
+  <img src="https://decision-J.github.io/assets/computer_vision/YOLO_v1/model.PNG" alt="Network Design" />
+</p>
+
+<p>위 구조의 구체적인 layer dimension값은 PASCAL VOC set을 학습하는 $7 * 7 * 30$에 맞추어져 있습니다. Convolutional layer는 ImageNet task에서 pretrain 된 것을 사용했으며 input resolution을 높이기 위해 input size를 imageNet의 두배인 $448 * 448$로 세팅했습니다.
+저자들은 정규 YOLO 외에 속도를 매우 빠르게 design한 Fast YOLO도 소개했습니다. Fast YOLO는 convolutional layer를 단 9개만 사용하면서 더 simple하게 network를 design했습니다.</p>
+
+<h3 id="loss-function">Loss function</h3>
+<p>YOLO의 train을 담당하는 Loss function에 대해 간단히만 살펴보고자 합니다. 논문에 소개된 Object function은 다음과 같습니다.</p>
+
+<p>$$
+\begin{gathered}
+\lambda_{noobj}\sum^{S^2}<em>i\sum^B_j I^{noobj}</em>{ij} (C_i-\hat{C_i})^2 + <br />
+\sum^{S^2}<em>i I^{obj}_i\sum</em>{c\in Class}(p_i(c)-\hat{p}<em>i(c))^2 + <br />
+\sum^{S^2}_i\sum^B_j I^{obj}</em>{ij} (C_i-\hat{C_i})^2 + <br />
+\lambda_{coord}\sum^{S^2}<em>i\sum^B_j I^{obj}</em>{ij} [(x_i-\hat{x_i})^2 + (y_i-\hat{y_i})^2] + <br />
+\lambda_{coord}\sum^{S^2}<em>i\sum^B_j I^{obj}</em>{ij} [(\sqrt{w_i}-\sqrt{\hat{w_i}})^2 + (\sqrt{h_i}-\sqrt{\hat{h_i}})^2] <br />
+\textit{where } \lambda_{noobj} = 0.5, \lambda_{coord} = 5
+\end{gathered}
+$$</p>
+
+<p>꽤 길어보이는데요! 하나씩 살펴보겠습니다. 먼저 가장 중요한 Key역할을 하는 Indicator function들에 대해 살펴봐야 합니다. 본문에 $i$는 cell, $j$는 bounding box의 인덱스입니다. 즉, $I^{obj}<em>i$는 해당 cell안에 object의 존재 여부 / $I^{obj}</em>{ij}$는 i번째 cell안의 j번째 bounding box가 prediction하기에 충분히 <em>responsible</em> 한 지에 대한 여부를 나타냅니다. 여기서 <em>responsible</em> 이란 IOU가 가장 높은 bounding box를 나타낼 겁니다. 즉, YOLO의 Loss function은 각 셀과 box들이 object를 담고 있느냐 없느냐에 따라 conditional하게 function의 모양이 달라지는 것입니다.</p>
+
+<p>먼저 cell과 box가 모두 object를 포함하지 못한다고 판단되면 어떻게 될까요? ($I^{noobj}_{ij} = 1$) 첫 번째 term을 제외하고 아래의 모든 term들이 사라지게 됩니다. 즉 <strong>가장 간단한 loss function</strong> 이 되는 것이죠. 아무래도 중요도가 떨어지기 때문입니다. (object도 포함하지 않은 영역을 굳이 coordinate까지 최적화할 필요는 없겠죠.)</p>
+
+<p>그 다음 단계는 cell은 object를 포함하고 있으나 box는 <em>responsible</em>하지 않은 경우입니다. ($I^{obj}_{i} = 1$) 이 경우, 두 번째 term만이 남게 되죠. 역시 bounding box가 믿음직스럽지 못하기 때문에 굳이 coordinate까지 최적화할 필요가 없습니다.</p>
+
+<p>마지막으로 cell도 object를 포함하고 box도 <em>responsible</em> 한 경우입니다. ($I^{obj}_{ij} = 1$) YOLO가 가장 최적화하고 싶어하고 정확하게 잡아내고 싶어하는 cell과 box일 것입니다. 이에 여러 가지 penalty항들이 추가됩니다. Class($C$)에 대한 정보들, x, y 좌표값과 weight($w$), height($h$)에 해당하는 box의 크기에 대한 부분까지 최적화의 대상이 됩니다. 이러한 Loss function으로 YOLO는 더 완벽한 box를 학습하게 됩니다.</p>
+
+<p>이렇게 conditional한 loss function을 사용함으로써 YOLO는 더 빠른 속도를 가지게 되는 것 같습니다. 굳이 중요하지 않은 부분은 깊이 있게 학습하지 않기 때문이죠. 이러한 특징은 속도 뿐만 아니라 YOLO가 generality한 특성을 갖는데에도 도움을 줄 것으로 생각됩니다.</p>
+
+<h3 id="experiment-results">Experiment Results</h3>
+<p>이제 실제 dataset에서 다른 detector들과 비교하여 YOLO가 어떤 성능을 나타내주는 지 비교해봅시다.</p>
+
+<p align="center">
+  <img src="https://decision-J.github.io/assets/computer_vision/YOLO_v1/results.PNG" alt="Performance comparison with other detectors from PASCAL VOC 2007, 2012" />
+</p>
+
+<p>각 detector들 별로 PASCAL VOC 2007, 2012 데이터로 학습했을 때의 성능 평가를 나타낸 표입니다. mAP는 정확성, FPS는 컴퓨팅 속도의 지표입니다. Fast YOLO가 155에 달하는 속도를 보여주며 매우 빠른 detector임을 자랑했습니다. YOLO의 경우 FPS 45를 기록하며 Real-Time detector 중에서도 매우 빠른 속도를 가짐에도 mAP에서 다른 detector들에 비해 그다지 떨어지지 않는 퍼포먼스를 보여줍니다. Detection의 정확도가 정말 높지 않더라도 매우 빠르게 이미지를 인식하자는 YOLO의 방향성에 맞는 결과인 것 같습니다.</p>
+
+<h3 id="limitation">Limitation</h3>
+<p>이런 YOLO에도 한계점이 존재합니다. 먼저 YOLO가 grid cell을 나누어 bounding box를 설정하기 때문에 공간적 constraint를 받을 수 밖에 없습니다.
+또한 loss function이 bounding box에 크기에 상관없이 계산되기 때문에 큰 box에서의 작은 error는 무시될 확률이 높은 반면 작은 box에서의 작은 error는 critical하게 반영됩니다.
+이러한 두 한계점으로 인해 새와 같은 작은 물체를 detection하는 데 어려움이 있습니다.</p>
+
+<h3 id="마무리">마무리</h3>
+<p>저자들은 (YOLO의 이름에서도 알 수 있듯이) 인간이 살짝 물체를 보아도 그 것이 무엇인지 알아채는 것에 아이디어를 얻어 이 detector를 고안했다고 합니다. 점차 image detection의 활용 범위가 넓어지고 있어 이렇게 빠른 속도에 기반한 detector들이 더 쓰임새가 많아질 것 같습니다. YOLO가 version을 upgrade하면서 얼마나 발전할지 다음 논문에서 살펴봐야겠습니다!</p>
+
+<hr />
+<h3 id="reference">Reference</h3>
+
+<ol>
+  <li>
+    <p>Paper: <a href="https://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/Redmon_You_Only_Look_CVPR_2016_paper.pdf">You Only Look Once: Unified, Real-Time Object Detection, Redmon, Joseph, et al. , Proceedings of the IEEE conference on computer vision and pattern recognition (2016)</a></p>
+  </li>
+  <li>
+    <p><a href="https://machinethink.net/blog/object-detection/">https://machinethink.net/blog/object-detection</a></p>
+  </li>
+</ol>]]></content><author><name>HaeYong Joung</name></author><category term="Papers" /><category term="CV" /><category term="object-detection" /><category term="yolo" /><summary type="html"><![CDATA[[Paper review] YOLO_v1]]></summary></entry><entry><title type="html">Coursera Computer Vision Course 과제 정리</title><link href="http://localhost:4000/computer-vision/2021/04/28/Coursera-ComputerVision-course.html" rel="alternate" type="text/html" title="Coursera Computer Vision Course 과제 정리" /><published>2021-04-28T00:00:00+09:00</published><updated>2021-04-28T00:00:00+09:00</updated><id>http://localhost:4000/computer-vision/2021/04/28/Coursera%20ComputerVision%20course</id><content type="html" xml:base="http://localhost:4000/computer-vision/2021/04/28/Coursera-ComputerVision-course.html"><![CDATA[<h1 id="coursera-computer-vision-course-과제-정리">Coursera Computer Vision Course 과제 정리</h1>
+
+<p>장장 1월부터 4월까지 3개월을 질질 끌었던 (<del>심지어 다 듣지도 못함</del>)</p>
+
+<p>Coursera의 <strong>“Deep Learning in Computer Vision”</strong>(<em>HSE Univ.</em>) 수업에서 나왔던 과제들을 간단하게 정리해보고자 합니다.</p>
+
+<hr />
+<h3 id="week-1">Week 1</h3>
+
+<p>1주차 과제는 주어진 gray scale 이미지의 <strong>윤곽선을 detection</strong>하는 것입니다.
+이 과정에서 <em>Canny Edge Detector</em> 라는 것을 사용하게 되는데요! 작동 매커니즘을 간략히 살펴보겠습니다.</p>
+
+<p><strong>1. Noise Reduction</strong></p>
+
+<p>제일 먼저 이미지의 Noise를 제거해줍니다. Canny detector는 윤곽선을 잡아내기 위해 미분을 하게 되는데 이 때 Noise가 끼어있으면 임계점을 찾아내기가 힘듭니다. 이에 Gaussian kernel을 이용한 Blur처리를 통해 이미지를 흐릿하게 바꿔줍니다. (핵심 포인트만 남기는 거죠!)</p>
+
+<p><strong>2. Calculating gradient</strong></p>
+
+<p>이렇게 smoothing된 이미지를 $I$라고 할 때, 이 이미지의 픽셀에서 그 값이 뚜렷하게 구분되는 지점이 어디인지(<em>Slope</em>), 또 그 곳에서 이미지 값의 강도는 얼마인지(<em>Magnitude</em>)를 찾아야 윤곽선을 찾을 수 있습니다.
+이를 찾기 위해 <em>Sobel Kernel</em> 을 활용합니다. 구하는 수식은 아래와 같습니다.</p>
+
+<p>$$
+\begin{gathered}
+|G| = \sqrt{I_x^2+I_y^2}, <br />
+\theta(x,y) = arctan(\frac{I_y}{I_x}) <br />
+where\ G\ is\ Magnitude\ and\ \theta\ is\ the\ Slope
+\end{gathered}
+$$</p>
+
+<p><strong>3. Non-maximum suppression</strong></p>
+
+<p>위에서 찾아진 Magnitude를 가지고 진짜 Maxumum, 즉, 더욱 명확한 픽셀 경계선을 찾기 위해 Non-maximum value들을 지워줍니다. Neighbor에 있는 점들끼리 $G$를 비교해서 이루어지게 됩니다.
+<br /></p>
+
+<p><strong>4. Double Threshold &amp; Edge tracking</strong></p>
+
+<p>이렇게 찾아진 윤곽선 후보들 중에서도 아직도 noise들이 섞여 있습니다. 이를 더 명확히 하기 위해서 <em>Low Threshold, High Threshold</em>를 설정해서 이 범위 밖에 있는 값들은 이제 윤곽선으로 확정해줍니다.
+Threshold들 사이에 있는 값들의 경우 Edge tracking을 통해 윤곽선으로 인정해줄 수 있는지를 최종 판단하는 절차를 거칩니다.
+<br /></p>
+
+<p>이제 과제를 통해 Canny detector를 적용한 모습을 살펴보겠습니다. 과정은 복잡하지만 코드를 통해 간단하게 구현할 수 있습니다. 먼저 edge를 detect해야 하는 이미지의 모습입니다.</p>
+
+<p align="center">
+  <img src="https://decision-J.github.io/assets/coursera_ComputerVision/canny1.PNG" alt="canny1" />
+</p>
+
+<p>이제 이 이미지에 Canny edge를 적용해보겠습니다.</p>
+
+<p align="center">
+  <img src="https://decision-J.github.io/assets/coursera_ComputerVision/canny2.PNG" alt="canny2" />
+</p>
+
+<p>보시는 것처럼 성과 나무의 경계선 만이 뚜렷하게 남은 것을 확인할 수 있습니다. 성 이미지의 3가지 모습들에서 구름의 모양이 각기 다른데, 이 부분에 대한 윤곽선도 잡아내는 부분이 흥미롭네요!</p>
+
+<hr />
+<h3 id="week-2">Week 2</h3>
+
+<p>2주차 과제는 <strong>Facial Point Detection</strong>입니다. 말 그대로 얼굴의 다양한 포인트들을 잡아내주는 영역이죠!
+다양한 사람 이미지들에서 정확히 눈썹, 눈, 코, 입 등을 잡아내주는 과제입니다.
+일련의 코드 작업을 통해 Point를 찍어주면 다음과 같습니다.</p>
+
+<pre><code class="language-{.python}">import matplotlib.pyplot as plt
+from matplotlib.patches import Circle
+
+def visualize_points(img, points):
+    fig,ax = plt.subplots(1)
+    ax.set_aspect('equal')
+
+    # Show the image
+    ax.imshow(img)
+
+    for i in range(int(len(points)/2)):
+        circ = Circle( ( (points[i*2] + 0.5) * 100, (points[(i*2 + 1)] + 0.5) * 100 ) ,1, color="red")
+
+        ax.add_patch(circ)
+
+        # Show the image
+    plt.show()
+
+visualize_points(imgs[1], points[1])
+</code></pre>
+<p align="center">
+  <img src="https://decision-J.github.io/assets/coursera_ComputerVision/facial1.png" alt="facial1" />
+</p>
+
+<p>이러한 이미지들은 아래와 같이 좌우 flip을 통해 모델에 넣을 때 Data augmentation 효과를 볼 수 있습니다.</p>
+
+<pre><code class="language-{.python}">def flip_img(img, points):
+
+    f_points = zeros(int(points.shape[0]))
+    reverse_points = points[::-1]
+    for i in range(int(points.shape[0]/2)):
+        f_points[i*2] = - reverse_points[i*2 + 1] # 음수 부호: X축 기준으로 좌우 반전 해주어야하기 때문
+        f_points[i*2 + 1] = reverse_points[i*2]
+
+    return f_img, f_points
+
+f_img, f_points = flip_img(imgs[1], points[1])
+visualize_points(f_img, f_points)
+</code></pre>
+<p align="center">
+  <img src="https://decision-J.github.io/assets/coursera_ComputerVision/facial2.png" alt="facial2" />
+</p>
+
+<p><del>물론 이런 이미지를 가지고 모델에 피팅해서 테스트 셋 이미지에서 facial point를 찾는 것이 과제의 완성이었지만.. 파일을 잃어버림…그래서 구질구질 코드까지 삽입;;</del></p>
+
+<hr />
+<h3 id="week-3">Week 3</h3>
+
+<p>3주차 과제는 <strong>Face detection</strong>입니다. 여러 종류의 사람들의 이미지(FDDB dataset)에서 얼굴만 정확하게 추출해내는 것이 과제의 목표입니다. 일종의 얼굴 object detection이라고도 할 수 있을 것 같습니다.</p>
+
+<p>먼저 이미지들과 Target을 살펴보겠습니다.</p>
+
+<p><img src="https://decision-J.github.io/assets/coursera_ComputerVision/data&amp;target.PNG" alt="PNG" /></p>
+
+<p>다음과 같이 약 1,000여 장의 사람들의 이미지가 존재하고 각 이미지마다 얼굴을 특정하는 <strong>Bounding Box</strong>가 있습니다. 과제의 목표는 Test set 이미지에서도 정확한 Bounding box를 그려줄 수 있는지 입니다.</p>
+
+<p>출제자의 의도는 <strong>Positive bounding box</strong> (주어진 label, 실제 사람 얼굴)와 <strong>Negative bounding box</strong> (사람이 얼굴이 아닌 다른 곳)를 활용하여 Binary classification으로 model이 얼굴을 찾아낼 수 있도록 하는 것입니다. 이를 위해서 이미지의 shape limit을 바탕으로 얼굴이 아닌 곳에 해당하는 negative bounding box를 임의로 생성하였습니다. 그 비율은 5:5 정도입니다.</p>
+
+<p align="center">
+  <img src="https://decision-J.github.io/assets/coursera_ComputerVision/pos_neg.png" alt="pos_neg" />
+  Top 2: Positive box, Bottom 2: Negative box
+</p>
+
+<p>과제에서 사용한 모델은 <strong>Lenet</strong> (<em>LeCun, Y., Bottou, L., Bengio, Y. and Haffner, P., 1998. Gradient-based learning applied to document recognition. Proceedings of the IEEE, 86(11), pp.2278-2324</em>)입니다. Keras를 이용해서 간단하게 구현할 수 있으며 데이터의 명확성 때문인지 epoch을 많이 주지 않아도 training accuracy 높게 나타납니다.</p>
+
+<p><img src="https://decision-J.github.io/assets/coursera_ComputerVision/performance.PNG" alt="Model Performance" /></p>
+
+<p>그럼 fitting된 모델을 가지고 test set에서도 얼굴을 잘 잡아낼 수 있을 지 살펴보겠습니다.</p>
+
+<p><img src="https://decision-J.github.io/assets/coursera_ComputerVision/pred.PNG" alt="PNG" /></p>
+
+<p>파란색 box가 모델이 얼굴이라고 예측한 부분입니다. 언뜻 잘 맞추는 것도 같지만 자세히 살펴볼수록 부정확한 모습입니다. 특히, <strong>얼굴을 전부 포함하지 못하고 부분 부분만을 잡아내고 있습니다</strong>. 아무래도 netgative box와 postive box를 동시에 넣고 fitting을 시키다 보니 발생하는 문제점인 것 같습니다. 또한 이미지의 size가 작고 그에 비해 box 사이즈는 크다보니 정확히 포착을 못하는 것 같습니다. 물론 더 하이엔드 모델을 쓴다거나 model을 더 정교하게 fitting하는 방법으로 performance는 개선될 여지가 매우 많아 보입니다. (<del>강의도 다 못들었는데 성능 개선까지 할리가 없습니다 ㅠㅠ</del>)</p>]]></content><author><name>HaeYong Joung</name></author><category term="Computer-vision" /><category term="CV" /><category term="canny" /><category term="edge" /><category term="facial-points" /><category term="face-detection" /><summary type="html"><![CDATA[Coursera Computer Vision Course 과제 정리]]></summary></entry><entry><title type="html">[Dacon] 한국어 문서 추출요약 AI 경진대회 참여기</title><link href="http://localhost:4000/competition/2020/12/30/Dacon-Korean-Summary-Extraction-Competition.html" rel="alternate" type="text/html" title="[Dacon] 한국어 문서 추출요약 AI 경진대회 참여기" /><published>2020-12-30T00:00:00+09:00</published><updated>2020-12-30T00:00:00+09:00</updated><id>http://localhost:4000/competition/2020/12/30/Dacon%20Korean%20Summary%20Extraction%20Competition</id><content type="html" xml:base="http://localhost:4000/competition/2020/12/30/Dacon-Korean-Summary-Extraction-Competition.html"><![CDATA[<h1 id="한국어-문서-추출요약-ai-경진대회">한국어 문서 추출요약 AI 경진대회</h1>
+
+<p>2020년 겨울, Dacon에서 실시한 한국어 문서 추출요약 AI 대회에 참가했던 것을 기록해보고자 합니다.
+(대회에 대한 자세한 사항은 <a href="https://dacon.io/competitions/official/235671/overview/">여기에!</a>)</p>
+
+<p><em>이러한 대회에 항상 함께해주는 쇠똥구리 팀원들에게 먼저 감사 인사를 전합니다.</em></p>
+
+<p>대회의 목적은 간단합니다! 다양한 한국어 기사 원문으로부터 적절한 <strong>추출 요약문</strong>을 도출해내는 모델을 만들면 됩니다.
+먼저 데이터의 모습과 함께 모델링의 목적을 파악해보겠습니다.</p>
+
+<hr />
+<h3 id="데이터--분석-목적">데이터 &amp; 분석 목적</h3>
+<p><img src="https://decision-J.github.io/assets/BertSum_Competition/data.PNG" alt="PNG" /></p>
+
+<p>먼저 데이터는 약 20~30여개의 문장으로 이루어진 기사들입니다. 각 기사에는 <strong>신문사, 기사원문, 요약문(label), 해당 요약문의 인덱스 값</strong>이 포함되어 있습니다. train 데이터의 요약문의 경우 사람이 라벨링을 했다고 설명되어 있습니다.</p>
+
+<p>인덱스가 3개인 것에서 눈치채셨겠지만 기사 원문에서 <u>가장 중요한 3개</u>의 문장을 추출하는 것이 대회의 목적입니다! 저희는 요약문을 추출하는 데 신문사 정보는 필요없다고 판단하여 원문과 요약문 데이터만을 가지고 모델링을 진행했습니다. 또한 학습 전에 특수 문자 제거, embedding 등 preprocessing 작업을 거쳤습니다. (embedding에는 뒤에서 언급할 koBert의 embedding 방법을 활용했습니다.)</p>
+
+<hr />
+<h3 id="사용-모델-kobert를-이용한-bertsum-model">사용 모델: koBert를 이용한 BertSum model</h3>
+<p>먼저 문서의 요약문을 만드는 방식에는 크게 두 가지가 있는 것 같습니다. 전체 텍스트에 적절한 요약문을 생성하는 <strong>생성요약(Abstractive)</strong>과 텍스트에 있는 문장 중 전체 내용을 대표한다고 생각되는 문장을 가져오는 <strong>추출요약(Extractive)</strong>이 있습니다. 저희 팀은 대회의 목적에 따라 추출요약에 해당하는 모델을 사용했습니다.</p>
+
+<p>다양한 추출요약 모델 중에서 <em>Fine-tune BERT for Extractive Summarization(Yang Liu, 2019)</em> 논문을 참고했습니다. (편의상 BertSum 모델이라고 부르겠습니다.)
+BertSum은 쉽게 말해서 구글의 pre-trained Bert 모델을 활용하여 텍스트 데이터를 학습하고 Transformer encoding을 통해 대표성을 갖는 문장을 classification해주는 방법입니다. 모델에 대한 더욱 상세하고 자세한 사항은 갓누누의 블로그, <a href="https://seonu-lim.github.io/nlp/BertSum/">이 곳</a>을 참고해주시면 도움이 되실 겁니다!</p>
+
+<p><img src="https://decision-J.github.io/assets/BertSum_Competition/bertsum.png" alt="갓누누가 만든 모델 설명도" title="&lt;u&gt;갓누누&lt;/u&gt;가 만든 모델 설명도" /></p>
+
+<p>앞 서 언급하였듯이 BertSum을 사용하려면 사전 학습된 Bert model이 필요한데요! 구글의 Bert는 영어를 기반으로 학습되어 있기 때문에 한국어를 기반한 모델이 필요했습니다. 다행히도 <strong>SKT Brain</strong>에서 한국어를 기반한 <strong>koBert</strong> 모형을 만들어주신 것을 알고 이 모형을 바탕으로 공모전을 진행했습니다.</p>
+
+<hr />
+<h3 id="모델링-특이사항">모델링 특이사항</h3>
+<p>몇 개의 Baseline 모델을 만들어 본 후, 갓단단 팀원께서 한 가지 문제점을 발견했습니다. 몇몇 요약문들을 살펴보니 대표성이 없는 문장들이 추출된다는 것입니다. 예를 들어 다음과 같습니다.</p>
+
+<ul>
+  <li>단양 시청의 전경</li>
+  <li>삼성 라이온즈 사진 제공</li>
+  <li>신축 아파트 조감도</li>
+  <li>…</li>
+</ul>
+
+<p>이러한 문장들이 대표 요약문으로 추출되는 이유를 다음 두가지 정도로 생각해보았습니다. 먼저, 기사와 관련된 강력한 키워드가 포함되어 있기 때문입니다. 예를 들어, “삼성 라이온즈 사진 제공”이라는 문장의 경우 기사 전반이 삼성 라이온즈 야구단에 관한 내용이기 때문에 해당 키워드가 직접적으로 포함되어 요약문으로 추출되었다는 것입니다.</p>
+
+<p>두 번째로 데이터의 특성 때문입니다. 학습하고 있는 데이터가 기사이기 때문에 주로 두괄식으로 작성되어 있습니다. 따라서 1~3번째 문장에 핵심 요약문들이 포함된 경우가 많습니다. (위의 데이터 label index를 살펴보아도 0,1,2가 굉장히 많은 것을 알 수 있습니다.) 이 때, 몇몇 기사들은 맨 앞 문장에 기사에 포함된 사진에 관한 내용을 담는 경우가 있기 때문에 단순히 index에 따라서 저 문장들이 딸려 나온다는 것입니다.</p>
+
+<p>이에 따라 갓단단 팀원은 <u>문장의 음절이 10개 이하인 문장</u>을 <strong>사전에 제거</strong>하고 모델링을 진행해봤다고 합니다. 그 결과 저런 터무니없는 요약문이 줄어들고 score 측면에서도 상당히 개선된 결과를 확인할 수 있었습니다.</p>
+
+<hr />
+<h3 id="결과">결과</h3>
+<p>수 많은 파라미터 튜닝 과정들을 거쳐 최적의 모형을 구축하였고, 최종적으로 428팀 중 20위라는 결과를 기록했습니다. 개인적으로는 첫 NLP대회에서 만족할만한 결과를 거둬 팀원들에게 고맙고 뿌듯한 마음입니다!</p>
+
+<hr />
+<h3 id="참고-사이트">참고 사이트</h3>
+
+<ol>
+  <li>갓누누 블로그: <a href="https://seonu-lim.github.io/">https://seonu-lim.github.io/</a></li>
+  <li>Fine-tune BERT for Extractive Summarization, Yang Liu, 2019: <a href="https://arxiv.org/pdf/1903.10318.pdf">https://arxiv.org/pdf/1903.10318.pdf</a></li>
+  <li>BertSum 저자 Github: <a href="https://github.com/nlpyang/BertSum">https://github.com/nlpyang/BertSum</a></li>
+  <li>SKT Brain koBert Github: <a href="https://github.com/SKTBrain/KoBERT">https://github.com/SKTBrain/KoBERT</a></li>
+</ol>]]></content><author><name>HaeYong Joung</name></author><category term="Competition" /><category term="text-mining" /><summary type="html"><![CDATA[한국어 문서 추출요약 AI 경진대회]]></summary></entry><entry><title type="html">Personality Detection from Text in Korean</title><link href="http://localhost:4000/text-mining/2020/10/30/DeepLearning-Based-Personality-detection-from-Text-in-Korean.html" rel="alternate" type="text/html" title="Personality Detection from Text in Korean" /><published>2020-10-30T00:00:00+09:00</published><updated>2020-10-30T00:00:00+09:00</updated><id>http://localhost:4000/text-mining/2020/10/30/DeepLearning-Based%20Personality%20detection%20from%20Text%20in%20Korean</id><content type="html" xml:base="http://localhost:4000/text-mining/2020/10/30/DeepLearning-Based-Personality-detection-from-Text-in-Korean.html"><![CDATA[<h1 id="personality-detection-from-text-in-korean">Personality Detection from Text in Korean</h1>
+
+<p>​</p>
+
+<p>​	이번 포스팅은 이전 포스팅에서 다루었던 논문의 architecture를 실제로 적용해보는 프로젝트를 진행한 과정을 소개하겠습니다. 수업에서 간단한 활용 사례를 보이기 위해 진행한 예제로 모델의 성능 등은 우수하지 못함을 알려드립니다 (ㅠㅠ)
+우선 <a href="https://decision-j.github.io/text-mining/2020/10/03/DeepLearning-Based-Personality-detection-from-Text.html">이전 포스팅</a>에서 다룬 논문은 간략하게 설명하자면 주어진 Text에서 저자의 Personality를 detection하는 것입니다.</p>
+
+<p>참조 논문의 모델은 영어 text를 기반으로 작성되어 있지만 이번 예제에서는 더 직관적인 이해를 위해서 <strong>한국어 text</strong>에서의 감성 분석을 진행해보고자 합니다. 한국어 text로 변경하면서 참조 논문과 약간 달라진 <u>수정 사항</u>들을 정리해보았습니다.</p>
+
+<blockquote>
+  <ol>
+    <li>Text dataset이 essay에서 <strong>news article</strong>로 변경</li>
+    <li><strong>한국어 word2vec</strong> embedding 사용</li>
+    <li>기존의 5-level classification에서 Positive personality만을 활용한 <strong>1-level classification</strong>으로 변경</li>
+    <li>Document level Mairesse vector 미 삽입</li>
+  </ol>
+</blockquote>
+
+<p>한가지씩 살펴보겠습니다. 먼저 text dataset을 기존 논문의 essay에서 비교적 구하기 쉬운 news article로 바꿨습니다. 네이버 스포츠 뉴스에서 크롤링한 기사들인데요, 자세한 내용은 다음 챕터에서 설명하겠습니다. 두 번째로는 한국어 데이터 분석이니 word embedding을 한국어 word2vec으로 바꿨습니다. 세 번째로 참조 논문은 저자의 특성을 5가지로 구분하여 classification하고 있는데요! 레이블을 달기 어렵기도 하고 다른 특성들은 구분하기 어렵다고 판단하여 positive만을 활용한 간단한 분류 문제로 재 정의했습니다. positive 특성도 뉴스 특성에 따라 다르게 정의할텐데, 이 부분도 다음 파트에서 다루겠습니다. 마지막으로 Mairesse vector를 삭제했습니다. 본 vector는 document level의 essay특성을 더 잘 잡아주기 위한 조정 단계인데, dataset이 news로 바뀐만큼 불필요하다고 판단했습니다. (영어 text를 위한 조정이기도 하구요!)
+그렇다면 데이터의 형태부터 소개하도록 하겠습니다.</p>
+
+<hr />
+
+<h3 id="데이터-소개">데이터 소개</h3>
+<p>앞서 소개해드린대로 데이터는 News article입니다. 뉴스 기사를 선택한 이유는 네이버에서 비교적 쉽게 크롤링할 수 있기 때문입니다. 그런데 크롤링하고 보니 뉴스 기사의 저자가 인성 특성을 보인다는 것이 말이 안된다는 것을 깨달았습니다… 그래서 저자의 특성이 아닌 기사 자체의 특성으로 분류 문제를 재 정의했습니다! (본 논문에서 너무 바뀌는 것이 아닌가 하는..하하)</p>
+
+<p>기사의 긍정적인 특성을 빠르고 쉽게 캐치해야 되기 때문에 (제가 직접 label을 달아줄 것이기 때문입니다..) 이기고 지는 것이 명확한 스포츠 뉴스를 타겟으로 삼았습니다. 제가 관심을 많이 가지고 있는 야구에서, 제가 응원하는 팀인 <code class="language-plaintext highlighter-rouge">기아 타이거즈</code>를 키워드로 뉴스 기사들을 모았습니다. 2019 시즌의 기사들을 대상으로 하였고 대략 일주일에 100여개씩, 한달 동안 총 550여개의 기사들을 모을 수 있었습니다.</p>
+
+<p>레이블을 다는 방법은 간단합니다! 기사의 내용을 읽고 <u>기아 타이거즈가 승리</u>하였거나 <u>기아 타이거즈 팀에 긍정적인</u> 내용에 해당하면 1, 반대의 경우 0을 부여했습니다. (엄청난 팬심이 가미된 레이블링입니다 ㅎㅎ)</p>
+
+<p>완성된 데이터 셋의 모습은 다음과 같습니다.</p>
+
+<p><img src="https://decision-J.github.io/assets/Personality_detection/dataset_korean.PNG" alt="PNG" /></p>
+
+<hr />
+
+<h3 id="데이터-전처리">데이터 전처리</h3>
+
+<p>완성된 dataset을 tokenize해줍니다! 또한 <code class="language-plaintext highlighter-rouge">#, &amp;, *</code>과 같은 분석에 큰 도움을 주지 않는 (뉴스 기사에 특히 많은) 특수 문자들을 제거해줍니다.</p>
+
+<p><img src="https://decision-J.github.io/assets/Personality_detection/dataset_token.PNG" alt="PNG" /></p>
+
+<p>이제 이 데이터를 한국어 버전 word2vec embedding matrix를 사용하여 vectorize해주겠습니다. 이제 이로써 모델에 들어갈 input dataset이 완성되었습니다!</p>
+
+<p><img src="https://decision-J.github.io/assets/Personality_detection/dataset_embed.PNG" alt="PNG" /></p>
+
+<hr />
+
+<h3 id="모델-결과">모델 결과</h3>
+
+<p>모델의 architecture는 참조 논문의 형태와 동일합니다. 간단하게 리뷰하자면 다음과 같습니다.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>No.</th>
+      <th style="text-align: center">Layer</th>
+      <th style="text-align: center">Level</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td style="text-align: center">Input layer</td>
+      <td style="text-align: center">Word</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td style="text-align: center">Convolution layer</td>
+      <td style="text-align: center">Word</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td style="text-align: center">Max-pooling layer</td>
+      <td style="text-align: center">Word</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td style="text-align: center">Concatenation layer</td>
+      <td style="text-align: center">Sentence</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td style="text-align: center">1-max pooling layer</td>
+      <td style="text-align: center">Document</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td style="text-align: center">Fully connected layer</td>
+      <td style="text-align: center">Document</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td style="text-align: center">Output layer</td>
+      <td style="text-align: center">Document</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>간단하게 Accuracy와 Objective function(Negative log likelihood)의 Loss를 기준으로 CV과정을 살펴보겠습니다. Dataset이 비교적 작기 때문에 5:1의 비율로 train / valid set을 나누고 진행했습니다.</p>
+
+<p><img src="https://decision-J.github.io/assets/Personality_detection/result1.PNG" alt="PNG" /></p>
+
+<p>첫 50 epoch을 진행한 결과입니다. 처음부터 끝까지 overfitting의 향기가 진하게 납니다. 데이터가 비교적 간단하기 때문에 벌어지는 현상 같은데요. Layer의 수정이 조금은 필요하지 않나 생각했습니다. 이에 Dropout layer를 추가하고 epoch도 조금 줄여서 data에 customizing을 시켜주었습니다!</p>
+
+<p><img src="https://decision-J.github.io/assets/Personality_detection/result2.PNG" alt="PNG" /></p>
+
+<p>이전 결과보다는 비교적 괜찮아졌습니다! 대략 7~10 정도의 epoch에서 모델을 끊어주는 것이 좋아보입니다. Accuracy는 대략 <strong>0.73</strong>정도의 퍼포먼스를 보여주는데요. 적용해보는 예제의 성격인만큼 모델 업그레이드는 이 정도만 하도록 하겠습니다! (후다닥)</p>
+
+<hr />
+
+<h3 id="시사점">시사점</h3>
+
+<p>아무래도 Accuracy가 높지 않다보니 개운하지 못한 느낌입니다 ㅎㅎ. Essay에서 News로 데이터의 성격이 바뀐 부분도 있고 (기사의 특성을 제가 잘 처리하지 못한 것 같습니다) Label을 제가 직접 달았다보니 모델이 학습하기 애매한 부분 (분석자의 직관이 반영된 부분)이 많이 포함되었기 때문이라고 보입니다.</p>
+
+<p>예제를 진행하면서 아무래도 2017년 논문이다보니 딥러닝 모델의 architecture가 조금 단순하다는 생각을 했습니다. 요즘 유행하는 발전된 모델들을 적용한다면 더 좋은 성능을 보여줄 수 있지 않을까 생각합니다.</p>
+
+<p>본 프로젝트는 논문 리뷰와 실전 적용을 해본 것에 만족하고 마무리하도록 하겠습니다~!</p>]]></content><author><name>HaeYong JOUNG</name></author><category term="Text-mining" /><category term="text-mining" /><summary type="html"><![CDATA[Personality Detection from Text in Korean]]></summary></entry><entry><title type="html">Deep Learning-Based Document Modeling for Personality Detection from Text</title><link href="http://localhost:4000/text-mining/2020/10/03/DeepLearning-Based-Personality-detection-from-Text.html" rel="alternate" type="text/html" title="Deep Learning-Based Document Modeling for Personality Detection from Text" /><published>2020-10-03T00:00:00+09:00</published><updated>2020-10-03T00:00:00+09:00</updated><id>http://localhost:4000/text-mining/2020/10/03/DeepLearning-Based%20Personality%20detection%20from%20Text</id><content type="html" xml:base="http://localhost:4000/text-mining/2020/10/03/DeepLearning-Based-Personality-detection-from-Text.html"><![CDATA[<h1 id="deep-learning-based-personality-detection-from-text">Deep Learning-Based Personality Detection from Text</h1>
+
+<p>​</p>
+
+<p>​	이번 포스팅은 CNN을 활용하여 Text 저자의 Personality를 판별하는 감성 분석 논문에 대해 리뷰해보겠습니다.</p>
+
+<p><em>Deep Learning-Based Document Modeling for Personality Detection from Text (N. Majumder, S. Poria and A. Gelbukh and E. Cambria)</em> 의 논문을 기초로 리뷰하였으며 해당 논문은 2017년에 IEEE Computer Society에 발표된 논문입니다. 본 포스팅에서 논문에서 소개하는 프로세스와 CNN 아키텍처에 대해 살펴보고 다음 포스팅에서는 이 논문을 활용하여 실제 실습 프로젝트를 진행해보겠습니다.</p>
+
+<hr />
+
+<h3 id="objective">Objective</h3>
+<p>본 논문의 목표는 주어진 Text에서 저자의 Personality를 detection하는 것입니다. 일종의 감성 분석이라고 볼 수 있는데요. 논문의 저자는 찾아내고자 하는 특성으로 5가지 Personality traits를 제안합니다. 따라서 <strong>5-level classification</strong> 문제라고 정의할 수 있습니다.
+​
+<img src="https://decision-J.github.io/assets/Personality_detection/traits.PNG" alt="PNG" /></p>
+
+<h3 id="process">Process</h3>
+<p>Classification을 진행하는 절차는 다음과 같습니다. 하나하나 차근차근 살펴보겠습니다.</p>
+
+<h4 id="1-data-input">1. Data Input</h4>
+<p>분석을 진행하기 위해 Text data를 확보합니다. 여기서 중요한 것은 각 Text data마다 5 class에 대한 <strong>label</strong>이 붙어있어야 한다는 것입니다. 이는 뒤에서 소개할 모델링이 Supervised learning으로 구성되어 있기 때문인데, 본 논문의 아쉬운 점 중 하나라고 생각합니다. (새로운 text data를 구할 때마다 5가지 특성에 대한 class를 새로 달아주어야 하기 때문이죠.) 저자는 <em>James Pennebaker and Laura King’s stream-of-consciousness essay dataset</em>을 사용하였고 2,467개의 essay data가 포함되어 있습니다.</p>
+
+<h4 id="2-preprocessing--filtering">2. Preprocessing &amp; Filtering</h4>
+<p>Data를 받고나면 전처리 과정을 거쳐서 model에 넣어주어야 합니다. 본 방법론은 단어 수준의 vector에서부터 패턴을 파악하여 전체 글의 특성을 파악하는 bottom-up 분석 방법이기 때문에 text data를 word level로 분해해주어야 합니다. 주로 ., ?, ! 등의 문장부호를 기준으로 하거나 띄어쓰기를 기준으로 분해해줍니다.</p>
+
+<p>이후에는 Filtering단계를 거칩니다. 저자는 생성된 단어 벡터들 중 emotion이 포함되지 않은 단어는 분석에서 제외합니다. Emotion이 포함된 단어 벡터를 저자는 “Emotionally Charged Vector”라고 합니다. 이러한 ECV를 찾기 위해서 <em>NRC Emotion Lexicon</em>을 참고합니다. Lexicon에는 10개의 emotion으로 tagging된 6,468개의 단어가 포함되어 있습니다. 저자는 단어 벡터들 중 이 lexicon에 포함되지 않은 단어들은 분석 대상에서 제거합니다. 이러한 Filtering 작업은 모델의 성능을 높혀준다고 밝혀져 있습니다.</p>
+
+<h4 id="3-modeling">3. Modeling</h4>
+<p><img src="https://decision-J.github.io/assets/Personality_detection/architecture.PNG" alt="PNG" /></p>
+
+<p>이제 본격적으로 CNN Model의 Architecture에 대해 살펴보겠습니다.<br />
+Model에서 중요한 layer는 다음과 같습니다.</p>
+
+<ul>
+  <li><strong>Input layer</strong></li>
+  <li><strong>Convolution layer</strong></li>
+  <li><strong>Max-pooling layer</strong></li>
+  <li><strong>Concatenation layer</strong></li>
+  <li><strong>1-max pooling layer</strong></li>
+  <li><strong>Fully connected layer</strong></li>
+  <li><strong>Output layer</strong></li>
+</ul>
+
+<p>이 중에서 Input, Convolution, Max-pooling layer는 Word-level에서 분석이 진행되고 Concatenation layer는 Sentence-level에서 진행됩니다. 마지막 1-max pooling, Fully connected, Output layer는 Document-level에서 최종적으로 classification을 수행합니다. 이제 각각에 대해 알아보도록 하겠습니다.</p>
+
+<ul>
+  <li><strong>Input layer</strong>
+Input layer에 투입되는 text data는 4-dimensional array로 구성됩니다.</li>
+</ul>
+
+<p>$$
+\begin{gathered}
+\Re^{D\times S\times W\times E}<br />
+\textit{where}\ D = \textit{Number of documents}<br />
+S = \textit{Maximum number of sentences}<br />
+W = \textit{Maximum number of words}<br />
+E = \textit{Length of word embeddings}
+\end{gathered}
+$$</p>
+
+<p>여기서 S, W는 단어와 문장의 최대값으로 표현되는 데, 이보다 적은 단어 혹은 문장을 가진 벡터의 경우 padding을 통해 채워줍니다. 또한 단어들의 관계에 대한 word representation이 이루어져야 하므로 embedding space를 활용하게 되는 데 이 때의 dimension이 E로 표현됩니다. 본 논문에서는 구글의 word2vec을 사용하므로 E는 300이 되겠습니다.</p>
+
+<ul>
+  <li><strong>Convolution layer</strong>
+Convolution layer에서는 n-gram filter로 word vector의 feature map을 생성합니다. 본 논문에서는 uni, bi, trigram filter 3가지 종류를 사용하고, 각 filter마다 200개씩의 개수를 가지고 있습니다.</li>
+</ul>
+
+<p>$$
+\begin{gathered}
+F_n^{conv} \in \Re^{200 \times n \times E} <br />
+FM_n \in \Re^{200 \times (W-n+1) \times 1} <br />
+\textit{where}\,\,\, n = 1,2,3
+\end{gathered}
+$$</p>
+
+<ul>
+  <li><strong>Max pooling layer</strong>
+각 Feature map의 대표 특성만을 추출하면서 down-sizing 해주기 위해 max pooling layer를 거칩니다.</li>
+</ul>
+
+<p>$$
+\begin{gathered}
+DFM_n \in \Re^{200 \times 1 \times 1}
+\end{gathered}
+$$</p>
+
+<ul>
+  <li><strong>Concatenation layer</strong>
+지금까지 word-level에서의 feature 추출 작업을 진행했습니다. 이를 결합해서 sentence-level에 해당하는 vector를 생성해야 합니다. Concatenation layer에서는 max pooling을 거친 feature vector를 flatten한 뒤 결합하여 sentence-level vector를 만듭니다.</li>
+</ul>
+
+<p>$$
+\begin{gathered}
+s_i \in \Re^{600} <br />
+\textit{where i is the number of sentences}
+\end{gathered}
+$$</p>
+
+<ul>
+  <li><strong>1-max pooling layer</strong>
+이제 각 sentence vector들의 최대 특성을 추출하여 document-level의 vector를 생성해줍니다.</li>
+</ul>
+
+<p>$$
+\begin{gathered}
+d^{network} = max(s_i, s_j) \in \Re^{600}
+\end{gathered}
+$$</p>
+
+<p>이 때 본 논문에서는 document자체의 특성에 더하여 $\textit{Mairesse}$ (2007)의 document feature를 추가해줍니다. 이 벡터는 document의 feature를 detection하는 데 도움을 주는 역할입니다. 총 84개의 feature를 포함하고 있습니다. 따라서 이를 모두 합쳐 classification에 넣을 vector를 생성합니다.</p>
+
+<p>$$
+\begin{gathered}
+d^{concat} = (d^{network}, d^{Mairesse}) \in \Re^{684}
+\end{gathered}
+$$</p>
+
+<ul>
+  <li><strong>Fully connected &amp; Output layer</strong>
+구해진 최종 document vector를 사용하여 Classification할 Personality에 해당하는지 아닌지 softmax function을 활용하여 확률을 예측합니다.</li>
+</ul>
+
+<p>$$
+\begin{gathered}
+ p(i|\theta) = \frac{exp(x_i)}{exp(x_{yes})+exp(x_{no})}, \textit{for i} \in \text{[yes, no]}
+\end{gathered}
+$$</p>
+
+<p>여기까지 아키텍처를 구성하는 7가지의 layer들을 살펴보았습니다. 본 모델에 train이 필요한 부분은 총 3가지 layer입니다. Convolution layer에서의 word filter, Fully connectec layer에서의 weight와 bias, Softmax layer에서의 weight, bias이 이에 해당합니다. 저자는 이 파라미터들을 <strong>Negative log likelihood</strong>를 loss function으로 하여 <strong>Ada delta method</strong>로 학습시키고 있습니다.</p>
+
+<p>여기까지 논문의 리뷰를 마치고 다음 포스팅에서 본 모델을 활용한 기사 분류 프로젝트를 실습해보겠습니다!
+​</p>]]></content><author><name>HaeYong JOUNG</name></author><category term="Text-mining" /><category term="text-mining" /><summary type="html"><![CDATA[Deep Learning-Based Personality Detection from Text]]></summary></entry></feed>

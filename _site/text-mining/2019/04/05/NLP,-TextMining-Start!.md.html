@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="google-translate-customization" content="108d9124921d80c3-80e20d618ff053c8-g4f02ec6f3dba68b7-c">
+<!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>NLP, Text mining start! | DECISION J</title>
+<meta name="generator" content="Jekyll v4.2.2">
+<meta property="og:title" content="NLP, Text mining start!">
+<meta name="author" content="HaeYong JOUNG">
+<meta property="og:locale" content="en_US">
+<meta name="description" content="NLP &amp; Text Mining Study">
+<meta property="og:description" content="NLP &amp; Text Mining Study">
+<link rel="canonical" href="http://localhost:4000/text-mining/2019/04/05/NLP,-TextMining-Start!.md.html">
+<meta property="og:url" content="http://localhost:4000/text-mining/2019/04/05/NLP,-TextMining-Start!.md.html">
+<meta property="og:site_name" content="DECISION J">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2019-04-05T00:00:00+09:00">
+<meta name="twitter:card" content="summary">
+<meta property="twitter:title" content="NLP, Text mining start!">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"HaeYong JOUNG"},"dateModified":"2019-04-05T00:00:00+09:00","datePublished":"2019-04-05T00:00:00+09:00","description":"NLP &amp; Text Mining Study","headline":"NLP, Text mining start!","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/text-mining/2019/04/05/NLP,-TextMining-Start!.md.html"},"url":"http://localhost:4000/text-mining/2019/04/05/NLP,-TextMining-Start!.md.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="shortcut icon" href="">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-noto-sans@0.0.72/index.min.css">
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <script src="/assets/js/main.js"></script><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="DECISION  J">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+<!-- and it's easy to individually load additional languages -->
+<script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/languages/go.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+// Init highlight js
+document.addEventListener('DOMContentLoaded', function(event) {
+  var els = document.querySelectorAll('pre code')
+
+  function addLangData(block) {
+    var outer = block.parentElement.parentElement.parentElement;
+    var lang = block.getAttribute('data-lang');
+    for (var i = 0; i < outer.classList.length; i++) {
+      var cls = outer.classList[i];
+      if (cls.startsWith('language-')) {
+        lang = cls;
+        break;
+      }
+    }
+    if (!lang) {
+      cls = block.getAttribute('class');
+      lang = cls ? cls.replace('hljs ', '') : '';
+    }
+    if (lang.startsWith('language-')) {
+      lang = lang.substr(9);
+    }
+    block.setAttribute('class', 'hljs ' + lang);
+    block.parentNode.setAttribute('data-lang', lang);
+  }
+
+  function addBadge(block) {
+    var enabled = ('true' || 'true').toLowerCase();
+    if (enabled == 'true') {
+      var pre = block.parentElement;
+      pre.classList.add('badge');
+    }
+  }
+
+  function handle(block) {
+    addLangData(block);
+    addBadge(block)
+    hljs.highlightBlock(block);
+  }
+
+  for (var i = 0; i < els.length; i++) {
+    var el = els[i];
+    handle(el);
+  }
+});
+</script>
+
+<style>
+  /* code language badge */
+  pre.badge::before {
+    content: attr(data-lang);
+    color: #fff;
+    background-color: #ff4e00;
+    padding: 0 .5em;
+    border-radius: 0 2px;
+    text-transform: uppercase;
+    text-align: center;
+    min-width: 32px;
+    display: inline-block;
+    position: absolute;
+    right: 0;
+  }
+
+  /* fix wrong badge display for firefox browser */
+  code > table pre::before {
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<header class="site-header " role="banner">
+
+  <div class="wrapper">
+    <div class="site-header-inner">
+<span class="site-brand"><a class="site-brand-inner" rel="author" href="/">
+  <img class="site-favicon" title="DECISION  J" src="" onerror="this.style.display='none'">
+  DECISION  J
+</a>
+</span><nav class="site-nav">
+          <input type="checkbox" id="nav-trigger" class="nav-trigger">
+          <label for="nav-trigger">
+            <span class="menu-icon">
+              <svg viewbox="0 0 18 15" width="18px" height="15px">
+                <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"></path>
+              </svg>
+            </span>
+          </label>
+
+          <div class="trigger">
+<a class="page-link" href="/about.html">ABOUT</a><a class="page-link" href="/archives.html">ARCHIVES</a><a class="page-link" href="/categories.html">CATEGORIES</a><a class="page-link" href="/">HOME</a>
+
+
+
+
+
+
+
+
+
+<span class="page-link">
+
+
+
+<div id="google_translate_element" style="display: none;">
+</div>
+
+<span class="ct-language">
+  <ul class="list-unstyled ct-language-dropdown">
+    
+      <li>
+        <a href="#" class="lang-select" data-lang="ko">
+          
+          <img src="https://cdn.countryflags.com/thumbs/south-korea/flag-400.png" title="Korean">
+          
+        </a>
+      </li>
+    
+      <li>
+        <a href="#" class="lang-select" data-lang="en">
+          
+          <img src="https://cdn.countryflags.com/thumbs/united-states-of-america/flag-400.png" title="English">
+          
+        </a>
+      </li>
+    
+  </ul>
+</span>
+
+<script type="text/javascript">
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'en',
+    autoDisplay: false,
+    layout: google.translate.TranslateElement.InlineLayout.VERTICAL
+  }, 'google_translate_element');
+
+  // Links to cross-origin destinations are unsafe
+  var gll = document.getElementsByClassName('goog-logo-link')[0];
+  if (gll) {
+    gll.setAttribute('rel', 'noopener');
+  }
+
+  function restoreLang() {
+    var iframe = document.getElementsByClassName('goog-te-banner-frame')[0];
+    if (!iframe) return;
+
+    var innerDoc = iframe.contentDocument || iframe.contentWindow.document;
+    var restore_el = innerDoc.getElementsByTagName("button");
+
+    for (var i = 0; i < restore_el.length; i++) {
+      if (restore_el[i].id.indexOf("restore") >= 0) {
+        restore_el[i].click();
+        var close_el = innerDoc.getElementsByClassName("goog-close-link");
+        close_el[0].click();
+        return;
+      }
+    }
+  }
+
+  function triggerHtmlEvent(element, eventName) {
+    var event;
+    if (document.createEvent) {
+      event = document.createEvent('HTMLEvents');
+      event.initEvent(eventName, true, true);
+      element.dispatchEvent(event);
+    } else {
+      event = document.createEventObject();
+      event.eventType = eventName;
+      element.fireEvent('on' + event.eventType, event);
+    }
+  }
+
+  var googleCombo = document.querySelector("select.goog-te-combo");
+  var langSelect = document.querySelector('.ct-language');
+  langSelect.addEventListener('click', function(event) {
+    if (!event.target) {
+      return;
+    }
+
+    var selected = document.querySelector('.ct-language .ct-language-selected');
+    if (selected) {
+      selected.classList.remove('ct-language-selected');
+    }
+
+    var target = event.target;
+    while (target && target !== langSelect ) {
+      if (target.matches('.lang-select')) {
+        break;
+      }
+      target = target.parentElement;
+    }
+
+    if (target && target.matches('.lang-select')) {
+      var lang = target.getAttribute('data-lang');
+      if (googleCombo.value == lang) {
+        restoreLang();
+      } else {
+        target.parentElement.classList.add('ct-language-selected');
+        googleCombo.value = lang;
+        triggerHtmlEvent(googleCombo, 'change');
+      }
+    }
+
+    event.preventDefault();
+  });
+}
+</script>
+
+<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</span>
+</div>
+        </nav>
+</div>
+  </div>
+</header>
+
+<script>
+  function initHeader() {
+    var lastScrollY = getScrollPos().y;
+    var documentElement = document.documentElement;
+
+    function storeScrollData() {
+      var y = getScrollPos().y;var scrollStatus = "";
+
+      if (y <= 0) {
+        scrollStatus = "top";
+      } else if ((window.innerHeight + y) >= document.body.offsetHeight) {
+        scrollStatus = "bottom";
+      } else {
+        var isScrollDown = (y - lastScrollY > 0) ? true : false;
+        scrollStatus = isScrollDown ? "down" : "up";
+      }
+
+      lastScrollY = y;
+      documentElement.setAttribute("data-scroll-status", scrollStatus);
+    }
+
+    window.addEventListener('scroll', function(e) {
+      storeScrollData();
+    });
+
+    storeScrollData();
+  }
+  document.addEventListener('DOMContentLoaded', initHeader);
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+  function hashLocate(hashValue) {
+    hashValue = hashValue.replace(/^.*#h-/, '');
+    hashValue = decodeURIComponent(hashValue);
+    var element = document.getElementById(hashValue);
+
+    if (!element) {
+      return;
+    }
+
+    var header = document.querySelector('header.site-header');
+    var headerRect = header.getBoundingClientRect();
+    var headerTop = Math.floor(headerRect.top);
+    var headerHeight = Math.floor(headerRect.height);
+    var scrollPos = getScrollPos();
+    var offsetY = element.offsetTop - (headerTop + headerHeight + 20);
+
+    if (offsetY == scrollPos.y) {
+      return;
+    }
+
+    if (headerTop == 0  && offsetY > scrollPos.y) {
+      offsetY += headerHeight + 2;
+    } else if (headerTop < 0  && offsetY < scrollPos.y) {
+      offsetY -= headerHeight - 2;
+    }
+
+    smoothScrollTo(offsetY);
+  }
+
+  // The first event occurred
+  window.addEventListener('load', function(event) {
+    if (window.location.hash) {
+      hashLocate(window.location.hash);
+    }
+  });
+
+  // The first event occurred
+  window.addEventListener('click', function(event) {
+    if (event.target.tagName.toLowerCase() == 'a') {
+      hashLocate(event.target.getAttribute('href'));
+    }
+  });
+</script>
+<div class="theme-toggle">
+  <input type="checkbox" id="theme-switch">
+  <label for="theme-switch">
+    <div class="toggle"></div>
+    <div class="names">
+      <p class="light">Light</p>
+      <p class="dark">Dark</p>
+    </div>
+  </label>
+</div>
+
+
+
+
+<script>
+  (function() {
+    var sw = document.getElementById('theme-switch');
+    var html = document.getElementsByTagName('html')[0];
+    var nightModeOption = ('auto' || 'auto').toLowerCase();
+    var storage = nightModeOption === 'manual'
+        ? localStorage
+        : sessionStorage;
+    var themeData = loadThemeData();
+
+    function saveThemeData(data) {
+      storage.setItem('theme', JSON.stringify(data));
+    }
+
+    function loadThemeData() {
+      var data = storage.getItem('theme');
+      try {
+        data = JSON.parse(data ? data : '');
+      } catch(e) {
+        data = { nightShift: undefined, autoToggleAt: 0 };
+        saveThemeData(data);
+      }
+      return data;
+    }
+
+    function handleThemeToggle(nightShift) {
+      themeData.nightShift = nightShift;
+      saveThemeData(themeData);
+      html.dataset.theme = nightShift ? 'dark' : 'light';
+      setTimeout(function() {
+        sw.checked = nightShift ? true : false;
+      }, 50);
+    }
+
+    function autoThemeToggle() {
+      // Next time point of theme toggle
+      var now = new Date();
+      var toggleAt = new Date();
+      var hours = now.getHours();
+      var nightShift = hours >= 19 || hours <=7;
+
+      if (nightShift) {
+        if (hours > 7) {
+          toggleAt.setDate(toggleAt.getDate() + 1);
+        }
+        toggleAt.setHours(7);
+      } else {
+        toggleAt.setHours(19);
+      }
+
+      toggleAt.setMinutes(0);
+      toggleAt.setSeconds(0);
+      toggleAt.setMilliseconds(0)
+
+      var delay = toggleAt.getTime() - now.getTime();
+
+      // auto toggle theme mode
+      setTimeout(function() {
+        handleThemeToggle(!nightShift);
+      }, delay);
+
+      return {
+        nightShift: nightShift,
+        toggleAt: toggleAt.getTime()
+      };
+    }
+
+    // Listen the theme toggle event
+    sw.addEventListener('change', function(event) {
+      handleThemeToggle(event.target.checked);
+    });
+
+    if (nightModeOption == 'auto') {
+      var data = autoThemeToggle();
+
+      // Toggle theme by local setting
+      if (data.toggleAt > themeData.autoToggleAt) {
+        themeData.autoToggleAt = data.toggleAt;
+        handleThemeToggle(data.nightShift);
+      } else {
+        handleThemeToggle(themeData.nightShift);
+      }
+    } else if (nightModeOption == 'manual') {
+      handleThemeToggle(themeData.nightShift);
+    } else {
+      var nightShift = themeData.nightShift;
+      if (nightShift === undefined) {
+        nightShift = nightModeOption === 'on';
+      }
+      handleThemeToggle(nightShift);
+    }
+  })();
+</script>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <div class="framework">
+  <section class="main">
+
+     <div class="post">
+  <section>
+
+
+
+
+
+
+
+
+
+<header class="post-header">
+  <h1 class="post-title p-name" itemprop="name headline">NLP, Text mining start!</h1>
+  <h2 class="post-subtitle"></h2>
+
+  <p class="post-meta">
+    <time class="dt-published" datetime="2019-04-05T00:00:00+09:00" itemprop="datePublished"><i class="fa fa-calendar"></i> Apr 05, 2019
+    </time>
+
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 5 mins</span>
+  </p>
+<div class="post-tags"><a class="post-tag" href="/tags.html#text-mining">#text-mining</a></div></header>
+<article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+    <div class="post-content e-content" itemprop="articleBody">
+
+      <h1 id="nlp--text-mining-study">NLP &amp; Text Mining Study</h1>
+
+<p>​</p>
+
+<p>​	19년도 1학기 Data Science Lab 스터디 주제는 <strong>Text Mining</strong>입니다.</p>
+
+<p>매주 1회 NLP(Nature Language Processing) 기법 중 Text Mining에 활용할 수 있는 알고리즘들을</p>
+
+<p>공부하여 포스팅할 계획입니다.</p>
+
+<p>이번 포스트에서는 본격적인 알고리즘 소개에 앞서 NLP가 어떤 프로세스를 가지고 있는 지, 어떤 방법</p>
+
+<p>으로 Language data를 처리하는 지 먼저 살펴보도록 하겠습니다.</p>
+
+<p><em>(본문에 앞서 본 포스트는 <a href="https://ratsgo.github.io/natural%20language%20processing/2017/03/22/lexicon/">ratsgo님의 블로그</a>, <a href="https://www.youtube.com/watch?v=OQQ-W_63UgQ">Stanford University School of Engineering</a>의 NLP강의를 참고하여 작성하였음을 미리 밝힙니다.)</em></p>
+
+<hr>
+
+<h2 id="why-is-nlp-hard">Why is NLP hard?</h2>
+
+<p>​</p>
+
+<p>​	기본적으로 인간의 언어를 데이터로 표현하고 분석하는 일은 결코 쉬운 작업이 아닙니다.</p>
+
+<p>인간의 언어는 동음이의어와 같이 문맥 상 해석이 필요한 경우가 잦고,  동일한 의미 내에서도</p>
+
+<p>단어들의 뉘앙스와 같은 모호한 차이점이 발생합니다. 때로는 신조어나 문법에 맞지 않는 구어적</p>
+
+<p>표현으로 분석을 어렵게 하는 경우도 많습니다.</p>
+
+<p>​	이렇게 어려운 인간의 말을 잘 분석해내기 위해 자연어 처리에는 다양한 분야의 지식들이 서로</p>
+
+<p>연관되어 있습니다.</p>
+
+<p><img src="https://hyj0103.github.io/assets/textmining_field.jpg" alt="field" width="500" height="500"></p>
+
+<p>​	먼저 NLP는 본질적으로 언어학에 큰 뿌리를 두고 있습니다. 언어학에서 말을 구분하는</p>
+
+<p>음운론(Pnomology), 형태론(Morphology), 통사론(Syntax), 의미론(Senmantics) 등의 아이디어를 기반</p>
+
+<p>으로 문장을 구분하고 단어를 파악합니다.</p>
+
+<p>​	또한 문장들을 계산할 수 있는 벡터로 representation하고 이를 분석하는 과정에서 다양한 수학적,</p>
+
+<p>통계적 지식이 활용됩니다.</p>
+
+<h2 id="basic-nlp-process">Basic NLP Process</h2>
+
+<p>​</p>
+
+<p>​	다음 그림은 <strong>NLP 처리 과정</strong>을 한 눈에 보기 쉽게 정리한 것인데 이를 이용하여 기본적인</p>
+
+<p>NLP 프로세스를 따라가보겠습니다.</p>
+
+<p><img src="https://hyj0103.github.io/assets/NLPprocess.jpg" alt="process" width="500" height="500"></p>
+
+<h4 id="1-sentence-splitting">1. Sentence Splitting</h4>
+
+<p>​</p>
+
+<p>​	일반적으로 우리가 분석하고자 하는 Text Data를 말뭉치, <strong>Corpus</strong>라고 지칭합니다.</p>
+
+<p>컴퓨터에게 이러한 Corpus는 분석할 수 없는 언어들의 나열일 것이므로 우리는 이를 적절히</p>
+
+<p>representation 해주는 것이 필요합니다. 이 과정의 첫 번째 단계가 <strong>Sentence Splitting</strong>입니다.</p>
+
+<p>단어의 의미 그대로 Corpus를 문장별로 끊어준다는 의미입니다. 보통 마침표, 느낌표, 물음표 등으로</p>
+
+<p>구분합니다.</p>
+
+<p>​</p>
+
+<p>​</p>
+
+<h4 id="2-tokenize">2. Tokenize</h4>
+
+<p>​</p>
+
+<p>​	<strong>토큰(Token)</strong>은 의미를 가지는 문자열을 지칭합니다. 작게는 형태소에서 크게는 단어에 이르기까지</p>
+
+<p>독립적인 의미를 갖는 문자열을 의미하는 것입니다. <strong>Tokenize</strong>단계에서는 앞 서 끊어준 문장들을 다시</p>
+
+<p>의미를 가지는 토큰들로 나누어 주는 것을 의미합니다.</p>
+
+<p>​	독립적인 의미를 갖는 문자열을 찾는 방법은 언어별, 쓰임새별, 문법별로 다양한 차이가 나타날 수</p>
+
+<p>있고 때때로 Sentence Splitting 기법보다 더 난해한 작업이 되기도 합니다.</p>
+
+<h4 id="3-pos-tagging-part-of-speech-tagging">3. POS Tagging (Part-Of-Speech Tagging)</h4>
+
+<p>​	<strong>포스태깅</strong>은 앞서 나뉘어진 토큰들에 품사를 지정해주는 작업(Tagging)을 말합니다.</p>
+
+<p>토큰에 품사를 정해주기 위해서는 단어간의 관계나 문장 내 쓰임새에 대한 분석 능력이 필요할텐데요.</p>
+
+<p>다양한 머신러닝 계열 기법들이 활용되어  포스태깅 작업을 진행하고 있습니다.</p>
+
+<p>​	더하여 <strong>Named entity recognition</strong>은 포스태깅 작업이 확장된 개념으로 각각의 태그별로 사람의</p>
+
+<p>이름이나, 지역 이름, 회사 이름과 같은 고유 명사를 분류해주는 작업을 말합니다.</p>
+
+<p>​	여기까지의 Sentence Splitting과 Tokenize, 포스태깅을 묶어 자연어 데이터의</p>
+
+<p><strong>전처리 작업(Preprocessing)</strong>이라고 볼 수 있겠습니다.</p>
+
+<p>​	실제 Corpus예시를 가지고 전처리 작업 실습을 진행해보도록 하겠습니다.</p>
+
+<p>파이썬의 <strong>KoLNPy 패키지</strong>를 활용하면 전처리 일련의 작업들을 손 쉽게 처리할 수 있습니다.</p>
+
+<p>다음은 KIA타이거즈 양현종 선수 관련 기사를 발췌하여 실습을 진행한 결과입니다.</p>
+
+<pre><code class="language-{python}">from konlpy.tag import Twitter
+Twitter.pos('돌을 던질 수 없다. KIA타이거즈 에이스 양현종이 개막 이후 부진에 빠졌다. 3경기에 등판해 14이닝을 던져 14자책점을 기록했다. 왜 그럴까?')
+
+ ('돌', 'Noun'),
+ ('을', 'Josa'),
+ ('던질', 'Verb'),
+ ('수', 'Noun'),
+ ('없다', 'Adjective'),
+ ('.', 'Punctuation'),
+ ('KIA', 'Alpha'),
+ ('타이거즈', 'Noun'),
+ ('에이스', 'Noun'),
+ ('양현종', 'Noun'),
+ ('이', 'Josa'),
+ ('개막', 'Noun'),
+ ('이후', 'Noun'),
+ ('부진', 'Noun'),
+ ('에', 'Josa'),
+ ('빠졌다', 'Verb'),
+ ('.', 'Punctuation'),
+ ('3', 'Number'),
+ ('경기', 'Noun'),
+ ('에', 'Josa'),
+ ('등', 'Noun'),
+ ('판해', 'Verb'),
+ ('14', 'Number'),
+ ('이닝', 'Noun'),
+ ('을', 'Josa'),
+ ('던져', 'Verb'),
+ ('14', 'Number'),
+ ('자책점', 'Noun'),
+ ('을', 'Josa'),
+ ('기록', 'Noun'),
+ ('했다', 'Verb'),
+ ('.', 'Punctuation'),
+ ('왜', 'Noun'),
+ ('그럴까', 'Adjective'),
+ ('?', 'Punctuation')
+</code></pre>
+
+<p>​</p>
+
+<p>​	결과를 살펴보면 먼저 마침표, 물음표 등을 기준으로 문장이 나뉘어진 것을 볼 수 있습니다.</p>
+
+<p>또한 독립적인 의미를 갖는 형태소별로 각 문장이 잘 나뉘는 것을 볼 수 있으며, 영어나 특수문자도</p>
+
+<p>잘 구별됩니다. 마지막으로 각 단어들에 품사들이 잘 주어져 있어 포스태깅 작업도 이상없이</p>
+
+<p>진행되었음을 알 수 있습니다.</p>
+
+<h4 id="4-syntactic-semantic-analysis">4. Syntactic, Semantic Analysis</h4>
+
+<p>​	일반적인 데이터 분석 과정에서 데이터 전처리가 끝나면 알고리즘을 적용하듯이, 자연어 처리에서도</p>
+
+<p>데이터 전처리 후 Corpus에서 여러 의미를 도출하기 위해 알고리즘을 적용합니다.</p>
+
+<p>Corpus 내의 문장, 단어의 관계나 의미를 파악하는 데 있어 크게 두 가지 관점으로 나누어 볼 수 있습니다.</p>
+
+<p>​	먼저, <strong>통사론적(Syntactic)</strong> 분석 방법이 있습니다. 통사론적 분석은 문장이 가지는 문법 구조,</p>
+
+<p>특정 단어가 주위 단어들과 어떤 구조로 얽혀있는 지에 대해 분석하는 방법입니다. 자연어 데이터를</p>
+
+<p><strong>Parsing한다</strong>는 개념이 바로 통사론적 분석 방법에 속합니다. 주로 앞서 진행된 전처리 과정에서</p>
+
+<p>나타나는 토큰들과 태깅들을 바탕으로 핵심 단어를 선택해서 주변 단어들과의 관계를 보는 방식으로</p>
+
+<p>진행됩니다. 올바른 전처리 과정, Parsing 방법을 통해 컴퓨터는 주어진 Corpus의 구조를 더욱 명확하게</p>
+
+<p>파악할 수 있게 됩니다.</p>
+
+<p>​	두 번째는 <strong>의미론적(Semantic)</strong> 분석 방법입니다. 앞 서 통사론적 분석 방법이 문법이나 품사와</p>
+
+<p>같은 문장의 전반적인 구조에 대해서 살펴보았다면, 의미론적 분석 방법은 특정 단어, 구, 문장 등이</p>
+
+<p>가지는 <strong>의미</strong>에 방점을 두고 분석하는 방법입니다.  CNN, RNN과 같은 Deep Learning 기법을 통해</p>
+
+<p>단어의 의미를 학습하게 되며, 이를 기반으로 더 큰 단위인 구, 문장 등으로 확장해가며 Corpus 내의</p>
+
+<p>Semantic 정보들을 분석하게 됩니다.</p>
+
+<p>​	Syntactic과 Semantic 모두 Text의 관계를 파악하는 데 중요한 개념입니다. 두 분석을 위한 알고리즘</p>
+
+<p>들은 다양하게 준비되어 있습니다. Corpus의 특징, 분석의 목적 등에 따라 적절한 알고리즘을 사용하여</p>
+
+<p>Corpus를 적절하게 분석하는 것이 Text Mining의 핵심이라고 할 수 있습니다.</p>
+
+<hr>
+
+<p>​	지금까지 <strong>NLP 분석 과정</strong>에 대해 간략하게 살펴보았습니다. 다음 포스트 부터는 본격적으로</p>
+
+<p><strong>Text Mining 알고리즘</strong>들에 대해 하나씩 공부해 보겠습니다.</p>
+
+<p>​</p>
+
+
+    </div>
+
+</article>
+<div class="post-nav">
+<span></span><a class="next" href="/text-mining/2019/05/16/Gloval-Vectors-for-Word-Representation,-GloVe.md.html" title="Gloval Vectors for Word Representation, GloVe">Gloval Vectors for Word Representation, GloVe...</a>
+</div>
+<div class="post-related">
+      <div>Related Articles</div>
+      <ul>
+        <li><a class="post-link" href="/papers/2021/08/03/Yolo_v3_review.html" title="Gloval Vectors for Word Representation, GloVe">[CV] YOLO v3</a></li>
+<li><a class="post-link" href="/competition/2020/02/20/Walmart-Saletype-Classification.md.html" title="Gloval Vectors for Word Representation, GloVe">[Kaggle] Walmart SaleType Classification</a></li>
+<li><a class="post-link" href="/text-mining/2019/05/16/Gloval-Vectors-for-Word-Representation,-GloVe.md.html" title="Gloval Vectors for Word Representation, GloVe">Gloval Vectors for Word Representation, GloVe</a></li>
+<li><a class="post-link" href="/papers/2021/05/31/Yolo_review.html" title="Gloval Vectors for Word Representation, GloVe">[CV] YOLO v1</a></li>
+</ul>
+    </div>
+<div class="post-comments"></div></section>
+</div>
+
+
+  </section>
+  <section class="sidebar" style="margin-left: 15px;">
+    <!-- Get sidebar items --><style type="text/css" media="screen">
+.post-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+</style>
+
+<div class="post-menu">
+  <div class="post-menu-title">TOC</div>
+  <div class="post-menu-content"></div>
+</div>
+
+<script>
+  function generateContent() {
+    var menu = document.querySelector(".post-menu");
+    var menuContent =  menu.querySelector(".post-menu-content");
+    var headings = document.querySelector(".post-content").querySelectorAll("h2, h3, h4, h5, h6");
+
+    // Hide menu when no headings
+    if (headings.length === 0) {
+      return menu.style.display = "none";
+    }
+
+    // Generate post menu
+    var menuHTML = '';
+    for (var i = 0; i < headings.length; i++) {
+      var h = headings[i];
+      menuHTML += (
+        '<li class="h-' + h.tagName.toLowerCase() + '">'
+        + '<a href="#h-' + h.getAttribute('id') + '">' + h.textContent + '</a></li>');
+    }
+
+    menuContent.innerHTML = '<ul>' + menuHTML + '</ul>';
+
+    // The header element
+    var header = document.querySelector('header.site-header');
+
+    function doMenuCollapse(index, over_items) {
+      var items = menuContent.firstChild.children;
+
+      if (over_items == undefined) {
+        over_items = 20;
+      }
+
+      if (items.length < over_items) {
+        return;
+      }
+
+      var activeItem = items[index];
+      var beginItem = activeItem
+      var endItem = activeItem
+      var beginIndex = index;
+      var endIndex = index + 1;
+      while (beginIndex >= 0
+        && !items[beginIndex].classList.contains('h-h2')) {
+        beginIndex -= 1;
+      }
+      while (endIndex < items.length
+        && !items[endIndex].classList.contains('h-h2')) {
+        endIndex += 1;
+      }
+      for (var i = 0; i < beginIndex; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+      for (var i = beginIndex + 1; i < endIndex; i++) {
+        item = items[i]
+        // if (!item.classList.contains('h-h2')) {
+          item.style.display = '';
+        // }
+      }
+      for (var i = endIndex; i < items.length; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+    }
+
+    // Init menu collapsed
+    doMenuCollapse(-1);
+
+    // Active the menu item
+    window.addEventListener('scroll', function (event) {
+      var lastActive = menuContent.querySelector('.active');
+      var changed = true;
+      var activeIndex = -1;
+      for (var i = headings.length - 1; i >= 0; i--) {
+        var h = headings[i];
+        var headingRect = h.getBoundingClientRect();
+        var headerRect = header.getBoundingClientRect();
+        var headerTop = Math.floor(headerRect.top);
+        var headerHeight = Math.floor(headerRect.height);
+        var headerHeight = headerTop + headerHeight + 20;
+        if (headingRect.top <= headerHeight) {
+          var id = 'h-' + h.getAttribute('id');
+          var a = menuContent.querySelector('a[href="#' + id  + '"]');
+          var curActive = a.parentNode;
+          if (curActive) {
+            curActive.classList.add('active');
+            activeIndex = i;
+          }
+          if (lastActive == curActive) {
+            changed = false;
+          }
+          break;
+        }
+      }
+      if (changed) {
+        if (lastActive) {
+          lastActive.classList.remove('active');
+        }
+        doMenuCollapse(activeIndex);
+      }
+      event.preventDefault();
+    });
+  }
+  generateContent();
+</script>
+</section>
+</div>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+    <div class="site-footer-inner">
+<div>Unpublished Work <span class="copyleft">©</span> 2017-2022 decision-J</div>
+      <div>Powered by <a title="Jekyll is a simple, blog-aware, static site
+      generator." href="https://jekyllrb.com/">Jekyll</a> &amp; <a title="Yat, yet
+      another theme." href="https://github.com/jeffreytse/jekyll-theme-yat">Yat Theme</a>.</div>
+      <div class="footer-col rss-subscribe">Subscribe <a href="/feed.xml">via RSS</a>
+</div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
