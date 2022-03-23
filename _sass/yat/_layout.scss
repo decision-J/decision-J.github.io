@@ -14,7 +14,6 @@ html {
       margin-top: 12px;
       background-color: transparent;
       transition: 0.1s height,background-color,box-shadow;
-
       &.site-header {
         .site-brand-inner, .page-link {
           color: #fff;
@@ -601,7 +600,7 @@ html {
   .page-banner-inner {
     @include vertical-center(relative);
 
-    color: $banner-text-color;
+    color: $banner-head-text-color;
     padding: 10px 5px;
     text-shadow: 1px 1px 2px #33333355;
 

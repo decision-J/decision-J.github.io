@@ -1,0 +1,75 @@
+I"�<h2 id="covid-19-visualization-competition-by-dacon">COVID-19 Visualization Competition by DACON</h2>
+
+<p>이번 포스팅에서는 3월 29일부터 5월 10일까지 진행된 DACON 주관 COVID-19 바이러스의 시각화 공모전의 내용을 담아보겠습니다.</p>
+
+<h3 id="data-merge">Data Merge?</h3>
+<p>Dacon에서 주어진 데이터 셋은 총 10개입니다.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="n">files</span> <span class="o">=</span> <span class="n">glob</span><span class="p">.</span><span class="n">glob</span><span class="p">(</span><span class="s">'dataset/*.csv'</span><span class="p">)</span>
+
+ <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+ <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">files</span> <span class="p">:</span>
+     <span class="n">i</span> <span class="o">=</span> <span class="n">i</span><span class="p">[</span><span class="mi">8</span><span class="p">:]</span>
+     <span class="n">data</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">re</span><span class="p">.</span><span class="n">sub</span><span class="p">(</span><span class="s">".csv"</span><span class="p">,</span><span class="s">""</span><span class="p">,</span><span class="n">i</span><span class="p">))</span>
+
+ <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">files</span><span class="p">))</span> <span class="p">:</span>
+     <span class="nb">globals</span><span class="p">()[</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">files</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+ <span class="n">data</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> ['Case','PatientInfo','PatientRoute','Region','SearchTrend',
+  'Time','TimeAge','TimeGender','TimeProvince','Weather']
+</code></pre></div></div>
+
+<p>크게 <strong>환자와 관련된 자료</strong>, <strong>시계열 자료</strong>, <strong>지역 연관 자료</strong>, <strong>검색어 트렌드</strong> 로 데이터를 구분지을 수 있을 것 같습니다. (Key 값 기준)
+최대한 많은 정보를 한 셋에 묶어서 시각화할 수 있도록 데이터들을 Merge하고 분석을 진행할 예정입니다.
+(하지만 먼저 개별 데이터셋을 살펴보고 Merge를 생각해보겠습니다.)</p>
+<hr />
+
+<h3 id="eda">EDA</h3>
+<p><img src="https://decision-J.github.io/assets/covid/time1.jpg" alt="jpg" width="400" height="400" /></p>
+
+<p>위 plot은 날짜가 지남에 따라 확진자와 사망자 수의 증가 추이를 보여주는 시계열 플랏입니다. 확진자 수가 늘어나는 추세와 사망자 수가 늘어나는 추세가 비슷한 모양을 보입니다. 특히 확진자의 증가 폭이 2월 말에서 3월 초 폭발적으로 늘어난 점을 알 수 있습니다</p>
+
+<p>이제 <strong>TimeProvince</strong> 데이터를 통해 지역별 확진자 수를 살펴봅니다.</p>
+
+<p><img src="https://decision-J.github.io/assets/covid/time2.jpg" alt="jpg" width="400" height="400" /></p>
+
+<p><em>(Plotly express는 다이나믹 시각화를 제공하지만 markdown에 넣는 방법을 아직 구글링중입니다 ㅠㅠ)</em></p>
+
+<p>본 공모전은 3월 20일까지의 데이터가 주어져 있습니다. 역시 대구, 경북 지역의 확진자가 가장 많이 보여짐을 알 수 있습니다. 이 두 지역을 제외하고 다른 곳의 확진자 수를 좀 더 자세히 살펴보겠습니다.</p>
+
+<p><img src="https://decision-J.github.io/assets/covid/time3.jpg" alt="jpg" width="400" height="400" /></p>
+
+<p><img src="https://decision-J.github.io/assets/covid/time8.PNG" alt="PNG" width="600" height="600" /></p>
+
+<p>250명 전까지의 확진자 수를 보여주는 플랏입니다. 서울, 경기 지역이 압도적인 2위 그룹임을 알 수 있습니다.</p>
+
+<p>이 데이터를 날짜별 시계열 데이터로 나타내어 지역별 증가 추이를 살펴보겠습니다.</p>
+
+<p><img src="https://decision-J.github.io/assets/covid/time5.jpg" alt="jpg" width="400" height="400" /></p>
+
+<p>2월 25일을 기점으로 폭발적으로 대구 지역 확진자가 증가하는 것을 알 수 있습니다. 신천지 예배 영향인 것으로 생각됩니다.</p>
+
+<p><img src="https://decision-J.github.io/assets/covid/time4.jpg" alt="jpg" width="400" height="400" /></p>
+
+<p>다음은 안타까운 지역별 사망자 플랏입니다. 확진자 플랏과 비슷하게 대구, 경북 지역에 집중되어 있습니다. 앞으로의 시각화를 통해 사망자 수와 확진자 수가 강력한 양의 선형 관계를 보이는 것을 확인할 수 있습니다.</p>
+
+<p>날짜별 지역 데이터 다음으로 <strong>연령대</strong>와 <strong>성별</strong> 데이터를 살펴보도록 하겠습니다.</p>
+
+<p><img src="https://decision-J.github.io/assets/covid/time6.PNG" alt="PNG" width="400" height="400" /></p>
+
+<p><img src="https://decision-J.github.io/assets/covid/time7.PNG" alt="PNG" width="400" height="400" /></p>
+
+<p>잘 알려져있는 대로 다른 나이대에 비하여 20대 확진자 수가 가장 많습니다. 또한 남성에 비해 여성이 더 코로나 바이러스 감염에 취약한 것으로 보입니다.</p>
+
+<p>마지막으로 날짜별 <strong>감염 경로</strong> 증가 추세를 알아보도록 하겠습니다.</p>
+
+<p><img src="https://decision-J.github.io/assets/covid/time9.PNG" alt="PNG" width="400" height="400" /></p>
+
+<p>Contact with patient, 즉, 감염자와의 접촉이 가장 큰 감염 경로인 것을 확인할 수 있습니다. 전염성이 높은 COVID-19의 위험성을 잘 보여줍니다.</p>
+
+<p>다음 포스팅에서는 위 데이터들을 활용하여 Hierarchical SGLMM을 통한 지역별 첫 확진자 발생 추이 예측 프로젝트에 대해 다루겠습니다.</p>
+
+:ET
