@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2022-03-26T16:28:55+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">DECISION  J</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><author><name>decision-J</name></author><entry><title type="html">Favicon 추가하기</title><link href="http://localhost:4000/github/blog/2022/03/26/Favicon-%EC%B6%94%EA%B0%80%ED%95%98%EA%B8%B0.html" rel="alternate" type="text/html" title="Favicon 추가하기" /><published>2022-03-26T00:00:00+09:00</published><updated>2022-03-26T00:00:00+09:00</updated><id>http://localhost:4000/github/blog/2022/03/26/Favicon%20%EC%B6%94%EA%B0%80%ED%95%98%EA%B8%B0</id><content type="html" xml:base="http://localhost:4000/github/blog/2022/03/26/Favicon-%EC%B6%94%EA%B0%80%ED%95%98%EA%B8%B0.html"><![CDATA[<h2 id="필요할-때-다시-보려고-만든-자료-soon"><em>필요할 때 다시 보려고 만든 자료</em> :soon:</h2>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2022-03-26T16:33:01+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">DECISION  J</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><author><name>decision-J</name></author><entry><title type="html">Favicon 추가하기</title><link href="http://localhost:4000/github/blog/2022/03/26/Favicon-%EC%B6%94%EA%B0%80%ED%95%98%EA%B8%B0.html" rel="alternate" type="text/html" title="Favicon 추가하기" /><published>2022-03-26T00:00:00+09:00</published><updated>2022-03-26T00:00:00+09:00</updated><id>http://localhost:4000/github/blog/2022/03/26/Favicon%20%EC%B6%94%EA%B0%80%ED%95%98%EA%B8%B0</id><content type="html" xml:base="http://localhost:4000/github/blog/2022/03/26/Favicon-%EC%B6%94%EA%B0%80%ED%95%98%EA%B8%B0.html"><![CDATA[<h2 id="필요할-때-다시-보려고-만든-자료-soon"><em>필요할 때 다시 보려고 만든 자료</em> :soon:</h2>
 
 <p>이번에 Github blog를 리뉴얼하면서 여러 가지들을 공부하고 있습니다.<br />
 시행착오를 겪었던 것들 중 다음에도 참고할만한 내용들을 간단하게 정리해보려고 합니다.</p>
@@ -24,13 +24,13 @@ Github blog를 처음 만들고 나면 favicon이 없어서 페이지 탭에 지
 우선 <a href="https://realfavicongenerator.net/">realfavicongenerator</a> 사이트에 접속해줍니다.</p>
 
 <p align="center">
-  <img src="https://decision-J.github.io/assets/github blog/favicon_generator.PNG" alt="realfavicongenerator 사이트" />
+  <img src="https://decision-J.github.io/assets/github blog/favicon_generator.png" alt="realfavicongenerator 사이트" />
 </p>
 
 <p>이 곳에서 <strong>Select your Favicon image</strong> 메뉴를 클릭하면 아까 물색했던 favicon image를 업로드할 수 있습니다.</p>
 
 <p align="center">
-  <img src="https://decision-J.github.io/assets/github blog/favicon_generator2.PNG" alt="Favicon 미리보기" />
+  <img src="https://decision-J.github.io/assets/github blog/favicon_generator2.png" alt="Favicon 미리보기" />
 </p>
 
 <p>업로드하면 위와 같이 favicon이 적용된 탭 모습 등의 프리뷰 화면을 제공하구요! <br />
@@ -39,14 +39,14 @@ Github blog를 처음 만들고 나면 favicon이 없어서 페이지 탭에 지
 <p>얼마 간의 세팅 시간이 지나고 나면 다음과 같은 화면을 보실 수 있습니다.</p>
 
 <p align="center">
-  <img src="https://decision-J.github.io/assets/github blog/favicon_generator3.PNG" alt="Favicon 생성" />
+  <img src="https://decision-J.github.io/assets/github blog/favicon_generator3.png" alt="Favicon 생성" />
 </p>
 
 <p>여기서 해주셔야할 일은 두 가지입니다.</p>
 
 <h3 id="1-assets-폴더에-faviconico-만들기">1. Assets 폴더에 favicon.ico 만들기</h3>
 <p>Download your package에 쓰여져 있는 메뉴를 클릭해서 Real favicon generator가 만들어준 이미지 파일들을 다운로드합니다.
-압축을 풀고 해당 폴더를 깃헙 블로그 폴더의 assets 내에 <strong>favicon.ico</strong>라는 이름으로 넣어줍니다!</p>
+압축을 풀고 해당 폴더를 깃헙 블로그 폴더의 assets 내에 <strong>logo.ico</strong>라는 이름으로 넣어줍니다!</p>
 
 <h3 id="2-headhtml-코드-수정">2. head.html 코드 수정</h3>
 <p>다음은 위 사이트에서 보여주는 HTML코드를 우리 블로그의 head.html에 추가해주어야 합니다. <br />
@@ -54,16 +54,16 @@ Github blog를 처음 만들고 나면 favicon이 없어서 페이지 탭에 지
 제가 사용하고 있는 YAT 테마는 <em>_includes/custom-head.html</em> 파일에서 favicon html코드를 추가할 수 있었습니다.</p>
 
 <p align="center">
-  <img src="https://decision-J.github.io/assets/github blog/favicon_generator4.PNG" alt="custom-head 코드 추가" />
+  <img src="https://decision-J.github.io/assets/github blog/favicon_generator4.png" alt="custom-head 코드 추가" />
 </p>
 
-<p>Real favicon generator 사이트에서 생성해준 HTML을 복붙하시면 되는데, 이 때 위와 같이 png 파일들의 경로를 1번에서 생성해준 favicon.ico으로 href 경로를 수정해주시면 됩니다!</p>
+<p>Real favicon generator 사이트에서 생성해준 HTML을 복붙하시면 되는데, 이 때 위와 같이 png 파일들의 경로를 1번에서 생성해준 logo.ico으로 href 경로를 수정해주시면 됩니다!</p>
 
 <h2 id="favicon-생성">Favicon 생성!</h2>
 <p>이 과정을 다 거치고 나면 나만의 예쁜 Favicon이 탭에 생성됩니다!!</p>
 
 <p align="center">
-  <img src="https://decision-J.github.io/assets/github blog/favicon.PNG" />
+  <img src="https://decision-J.github.io/assets/github blog/favicon.png" />
 </p>]]></content><author><name>HaeYong Joung</name></author><category term="Github" /><category term="Blog" /><category term="github" /><category term="blog" /><category term="favicon" /><summary type="html"><![CDATA[필요할 때 다시 보려고 만든 자료 :soon:]]></summary></entry><entry><title type="html">[CV] YOLOX</title><link href="http://localhost:4000/papers/2021/09/27/YOLOX_review.html" rel="alternate" type="text/html" title="[CV] YOLOX" /><published>2021-09-27T00:00:00+09:00</published><updated>2021-09-27T00:00:00+09:00</updated><id>http://localhost:4000/papers/2021/09/27/YOLOX_review</id><content type="html" xml:base="http://localhost:4000/papers/2021/09/27/YOLOX_review.html"><![CDATA[<h1 id="paper-review-yolox">[Paper review] YOLOX</h1>
 
 <p>YOLO series의 2021년 가장 최신 버전, <strong>YOLO X</strong> 를 리뷰해보려고 합니다.</p>
