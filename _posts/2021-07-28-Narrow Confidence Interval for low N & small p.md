@@ -41,9 +41,7 @@ comments: true
 예측된 누적 불량률의 신뢰구간을 구해보겠습니다. 우선 가장 기본인 정규 근사를 이용한 비율 신뢰구간을 적용해보겠습니다.
 
 
-$\begin{gathered}
-CI_{normal} = \hat{p} \pm z\sqrt{\frac{\hat{p}(1-\hat{p})}{n}}
-\end{gathered}$
+$$ CI_{normal} = \hat{p} \pm z\sqrt{\frac{\hat{p}(1-\hat{p})}{n}} $$
 
 
 <p align="center">
