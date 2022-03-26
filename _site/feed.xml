@@ -1,4 +1,70 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2022-03-26T15:40:23+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">DECISION  J</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><author><name>decision-J</name></author><entry><title type="html">[CV] YOLOX</title><link href="http://localhost:4000/papers/2021/09/27/YOLOX_review.html" rel="alternate" type="text/html" title="[CV] YOLOX" /><published>2021-09-27T00:00:00+09:00</published><updated>2021-09-27T00:00:00+09:00</updated><id>http://localhost:4000/papers/2021/09/27/YOLOX_review</id><content type="html" xml:base="http://localhost:4000/papers/2021/09/27/YOLOX_review.html"><![CDATA[<h1 id="paper-review-yolox">[Paper review] YOLOX</h1>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2022-03-26T16:28:55+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">DECISION  J</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><author><name>decision-J</name></author><entry><title type="html">Favicon 추가하기</title><link href="http://localhost:4000/github/blog/2022/03/26/Favicon-%EC%B6%94%EA%B0%80%ED%95%98%EA%B8%B0.html" rel="alternate" type="text/html" title="Favicon 추가하기" /><published>2022-03-26T00:00:00+09:00</published><updated>2022-03-26T00:00:00+09:00</updated><id>http://localhost:4000/github/blog/2022/03/26/Favicon%20%EC%B6%94%EA%B0%80%ED%95%98%EA%B8%B0</id><content type="html" xml:base="http://localhost:4000/github/blog/2022/03/26/Favicon-%EC%B6%94%EA%B0%80%ED%95%98%EA%B8%B0.html"><![CDATA[<h2 id="필요할-때-다시-보려고-만든-자료-soon"><em>필요할 때 다시 보려고 만든 자료</em> :soon:</h2>
+
+<p>이번에 Github blog를 리뉴얼하면서 여러 가지들을 공부하고 있습니다.<br />
+시행착오를 겪었던 것들 중 다음에도 참고할만한 내용들을 간단하게 정리해보려고 합니다.</p>
+
+<hr />
+
+<p>오늘 정리해볼 내용은 <strong>Favicon 추가하기</strong> 입니다. <br />
+Github blog를 처음 만들고 나면 favicon이 없어서 페이지 탭에 지구본 모양이 나타나는데요! :earth_asia:<br />
+이 지구본 모양을 예쁜 저만의 favicon으로 바꿔보겠습니다.</p>
+
+<h2 id="favicon-이미지-물색">Favicon 이미지 물색</h2>
+
+<p>우선 맘에 드는 favicon 이미지를 찾아봅시다!
+저는 이 사이트(<a href="https://www.flaticon.com/">Flaticon</a>)를 참고했습니다. <br />
+저의 블로그 이름이 Decision J의 블로그이니만큼 예쁜 J 이미지를 찾아보았습니다 :)</p>
+
+<p align="center">
+  <img src="https://decision-J.github.io/assets/logo.ico/favicon-32x32.png" />
+</p>
+
+<h2 id="favicon-만들기">Favicon 만들기</h2>
+<p>선택한 이미지를 Favicon으로 만들어보겠습니다.
+우선 <a href="https://realfavicongenerator.net/">realfavicongenerator</a> 사이트에 접속해줍니다.</p>
+
+<p align="center">
+  <img src="https://decision-J.github.io/assets/github blog/favicon_generator.PNG" alt="realfavicongenerator 사이트" />
+</p>
+
+<p>이 곳에서 <strong>Select your Favicon image</strong> 메뉴를 클릭하면 아까 물색했던 favicon image를 업로드할 수 있습니다.</p>
+
+<p align="center">
+  <img src="https://decision-J.github.io/assets/github blog/favicon_generator2.PNG" alt="Favicon 미리보기" />
+</p>
+
+<p>업로드하면 위와 같이 favicon이 적용된 탭 모습 등의 프리뷰 화면을 제공하구요! <br />
+아래로 쭉 내려보시면 <strong>Generate Your Favicons and HTML code</strong> 메뉴가 있습니다. 이 곳을 클릭해줍니다!</p>
+
+<p>얼마 간의 세팅 시간이 지나고 나면 다음과 같은 화면을 보실 수 있습니다.</p>
+
+<p align="center">
+  <img src="https://decision-J.github.io/assets/github blog/favicon_generator3.PNG" alt="Favicon 생성" />
+</p>
+
+<p>여기서 해주셔야할 일은 두 가지입니다.</p>
+
+<h3 id="1-assets-폴더에-faviconico-만들기">1. Assets 폴더에 favicon.ico 만들기</h3>
+<p>Download your package에 쓰여져 있는 메뉴를 클릭해서 Real favicon generator가 만들어준 이미지 파일들을 다운로드합니다.
+압축을 풀고 해당 폴더를 깃헙 블로그 폴더의 assets 내에 <strong>favicon.ico</strong>라는 이름으로 넣어줍니다!</p>
+
+<h3 id="2-headhtml-코드-수정">2. head.html 코드 수정</h3>
+<p>다음은 위 사이트에서 보여주는 HTML코드를 우리 블로그의 head.html에 추가해주어야 합니다. <br />
+블로그 테마에 따라 head를 변경해주는 파일은 여러 가지가 있을 텐데요!
+제가 사용하고 있는 YAT 테마는 <em>_includes/custom-head.html</em> 파일에서 favicon html코드를 추가할 수 있었습니다.</p>
+
+<p align="center">
+  <img src="https://decision-J.github.io/assets/github blog/favicon_generator4.PNG" alt="custom-head 코드 추가" />
+</p>
+
+<p>Real favicon generator 사이트에서 생성해준 HTML을 복붙하시면 되는데, 이 때 위와 같이 png 파일들의 경로를 1번에서 생성해준 favicon.ico으로 href 경로를 수정해주시면 됩니다!</p>
+
+<h2 id="favicon-생성">Favicon 생성!</h2>
+<p>이 과정을 다 거치고 나면 나만의 예쁜 Favicon이 탭에 생성됩니다!!</p>
+
+<p align="center">
+  <img src="https://decision-J.github.io/assets/github blog/favicon.PNG" />
+</p>]]></content><author><name>HaeYong Joung</name></author><category term="Github" /><category term="Blog" /><category term="github" /><category term="blog" /><category term="favicon" /><summary type="html"><![CDATA[필요할 때 다시 보려고 만든 자료 :soon:]]></summary></entry><entry><title type="html">[CV] YOLOX</title><link href="http://localhost:4000/papers/2021/09/27/YOLOX_review.html" rel="alternate" type="text/html" title="[CV] YOLOX" /><published>2021-09-27T00:00:00+09:00</published><updated>2021-09-27T00:00:00+09:00</updated><id>http://localhost:4000/papers/2021/09/27/YOLOX_review</id><content type="html" xml:base="http://localhost:4000/papers/2021/09/27/YOLOX_review.html"><![CDATA[<h1 id="paper-review-yolox">[Paper review] YOLOX</h1>
 
 <p>YOLO series의 2021년 가장 최신 버전, <strong>YOLO X</strong> 를 리뷰해보려고 합니다.</p>
 
@@ -1174,134 +1240,4 @@ BertSum은 쉽게 말해서 구글의 pre-trained Bert 모델을 활용하여 �
 
 <p>예제를 진행하면서 아무래도 2017년 논문이다보니 딥러닝 모델의 architecture가 조금 단순하다는 생각을 했습니다. 요즘 유행하는 발전된 모델들을 적용한다면 더 좋은 성능을 보여줄 수 있지 않을까 생각합니다.</p>
 
-<p>본 프로젝트는 논문 리뷰와 실전 적용을 해본 것에 만족하고 마무리하도록 하겠습니다~!</p>]]></content><author><name>HaeYong JOUNG</name></author><category term="Text-mining" /><category term="text-mining" /><summary type="html"><![CDATA[Personality Detection from Text in Korean]]></summary></entry><entry><title type="html">Deep Learning-Based Document Modeling for Personality Detection from Text</title><link href="http://localhost:4000/text-mining/2020/10/03/DeepLearning-Based-Personality-detection-from-Text.html" rel="alternate" type="text/html" title="Deep Learning-Based Document Modeling for Personality Detection from Text" /><published>2020-10-03T00:00:00+09:00</published><updated>2020-10-03T00:00:00+09:00</updated><id>http://localhost:4000/text-mining/2020/10/03/DeepLearning-Based%20Personality%20detection%20from%20Text</id><content type="html" xml:base="http://localhost:4000/text-mining/2020/10/03/DeepLearning-Based-Personality-detection-from-Text.html"><![CDATA[<h1 id="deep-learning-based-personality-detection-from-text">Deep Learning-Based Personality Detection from Text</h1>
-
-<p>​</p>
-
-<p>​	이번 포스팅은 CNN을 활용하여 Text 저자의 Personality를 판별하는 감성 분석 논문에 대해 리뷰해보겠습니다.</p>
-
-<p><em>Deep Learning-Based Document Modeling for Personality Detection from Text (N. Majumder, S. Poria and A. Gelbukh and E. Cambria)</em> 의 논문을 기초로 리뷰하였으며 해당 논문은 2017년에 IEEE Computer Society에 발표된 논문입니다. 본 포스팅에서 논문에서 소개하는 프로세스와 CNN 아키텍처에 대해 살펴보고 다음 포스팅에서는 이 논문을 활용하여 실제 실습 프로젝트를 진행해보겠습니다.</p>
-
-<hr />
-
-<h3 id="objective">Objective</h3>
-<p>본 논문의 목표는 주어진 Text에서 저자의 Personality를 detection하는 것입니다. 일종의 감성 분석이라고 볼 수 있는데요. 논문의 저자는 찾아내고자 하는 특성으로 5가지 Personality traits를 제안합니다. 따라서 <strong>5-level classification</strong> 문제라고 정의할 수 있습니다.
-​
-<img src="https://decision-J.github.io/assets/Personality_detection/traits.PNG" alt="PNG" /></p>
-
-<h3 id="process">Process</h3>
-<p>Classification을 진행하는 절차는 다음과 같습니다. 하나하나 차근차근 살펴보겠습니다.</p>
-
-<h4 id="1-data-input">1. Data Input</h4>
-<p>분석을 진행하기 위해 Text data를 확보합니다. 여기서 중요한 것은 각 Text data마다 5 class에 대한 <strong>label</strong>이 붙어있어야 한다는 것입니다. 이는 뒤에서 소개할 모델링이 Supervised learning으로 구성되어 있기 때문인데, 본 논문의 아쉬운 점 중 하나라고 생각합니다. (새로운 text data를 구할 때마다 5가지 특성에 대한 class를 새로 달아주어야 하기 때문이죠.) 저자는 <em>James Pennebaker and Laura King’s stream-of-consciousness essay dataset</em>을 사용하였고 2,467개의 essay data가 포함되어 있습니다.</p>
-
-<h4 id="2-preprocessing--filtering">2. Preprocessing &amp; Filtering</h4>
-<p>Data를 받고나면 전처리 과정을 거쳐서 model에 넣어주어야 합니다. 본 방법론은 단어 수준의 vector에서부터 패턴을 파악하여 전체 글의 특성을 파악하는 bottom-up 분석 방법이기 때문에 text data를 word level로 분해해주어야 합니다. 주로 ., ?, ! 등의 문장부호를 기준으로 하거나 띄어쓰기를 기준으로 분해해줍니다.</p>
-
-<p>이후에는 Filtering단계를 거칩니다. 저자는 생성된 단어 벡터들 중 emotion이 포함되지 않은 단어는 분석에서 제외합니다. Emotion이 포함된 단어 벡터를 저자는 “Emotionally Charged Vector”라고 합니다. 이러한 ECV를 찾기 위해서 <em>NRC Emotion Lexicon</em>을 참고합니다. Lexicon에는 10개의 emotion으로 tagging된 6,468개의 단어가 포함되어 있습니다. 저자는 단어 벡터들 중 이 lexicon에 포함되지 않은 단어들은 분석 대상에서 제거합니다. 이러한 Filtering 작업은 모델의 성능을 높혀준다고 밝혀져 있습니다.</p>
-
-<h4 id="3-modeling">3. Modeling</h4>
-<p><img src="https://decision-J.github.io/assets/Personality_detection/architecture.PNG" alt="PNG" /></p>
-
-<p>이제 본격적으로 CNN Model의 Architecture에 대해 살펴보겠습니다.<br />
-Model에서 중요한 layer는 다음과 같습니다.</p>
-
-<ul>
-  <li><strong>Input layer</strong></li>
-  <li><strong>Convolution layer</strong></li>
-  <li><strong>Max-pooling layer</strong></li>
-  <li><strong>Concatenation layer</strong></li>
-  <li><strong>1-max pooling layer</strong></li>
-  <li><strong>Fully connected layer</strong></li>
-  <li><strong>Output layer</strong></li>
-</ul>
-
-<p>이 중에서 Input, Convolution, Max-pooling layer는 Word-level에서 분석이 진행되고 Concatenation layer는 Sentence-level에서 진행됩니다. 마지막 1-max pooling, Fully connected, Output layer는 Document-level에서 최종적으로 classification을 수행합니다. 이제 각각에 대해 알아보도록 하겠습니다.</p>
-
-<ul>
-  <li><strong>Input layer</strong>
-Input layer에 투입되는 text data는 4-dimensional array로 구성됩니다.</li>
-</ul>
-
-<p>$$
-\begin{gathered}
-\Re^{D\times S\times W\times E}<br />
-\textit{where}\ D = \textit{Number of documents}<br />
-S = \textit{Maximum number of sentences}<br />
-W = \textit{Maximum number of words}<br />
-E = \textit{Length of word embeddings}
-\end{gathered}
-$$</p>
-
-<p>여기서 S, W는 단어와 문장의 최대값으로 표현되는 데, 이보다 적은 단어 혹은 문장을 가진 벡터의 경우 padding을 통해 채워줍니다. 또한 단어들의 관계에 대한 word representation이 이루어져야 하므로 embedding space를 활용하게 되는 데 이 때의 dimension이 E로 표현됩니다. 본 논문에서는 구글의 word2vec을 사용하므로 E는 300이 되겠습니다.</p>
-
-<ul>
-  <li><strong>Convolution layer</strong>
-Convolution layer에서는 n-gram filter로 word vector의 feature map을 생성합니다. 본 논문에서는 uni, bi, trigram filter 3가지 종류를 사용하고, 각 filter마다 200개씩의 개수를 가지고 있습니다.</li>
-</ul>
-
-<p>$$
-\begin{gathered}
-F_n^{conv} \in \Re^{200 \times n \times E} <br />
-FM_n \in \Re^{200 \times (W-n+1) \times 1} <br />
-\textit{where}\,\,\, n = 1,2,3
-\end{gathered}
-$$</p>
-
-<ul>
-  <li><strong>Max pooling layer</strong>
-각 Feature map의 대표 특성만을 추출하면서 down-sizing 해주기 위해 max pooling layer를 거칩니다.</li>
-</ul>
-
-<p>$$
-\begin{gathered}
-DFM_n \in \Re^{200 \times 1 \times 1}
-\end{gathered}
-$$</p>
-
-<ul>
-  <li><strong>Concatenation layer</strong>
-지금까지 word-level에서의 feature 추출 작업을 진행했습니다. 이를 결합해서 sentence-level에 해당하는 vector를 생성해야 합니다. Concatenation layer에서는 max pooling을 거친 feature vector를 flatten한 뒤 결합하여 sentence-level vector를 만듭니다.</li>
-</ul>
-
-<p>$$
-\begin{gathered}
-s_i \in \Re^{600} <br />
-\textit{where i is the number of sentences}
-\end{gathered}
-$$</p>
-
-<ul>
-  <li><strong>1-max pooling layer</strong>
-이제 각 sentence vector들의 최대 특성을 추출하여 document-level의 vector를 생성해줍니다.</li>
-</ul>
-
-<p>$$
-\begin{gathered}
-d^{network} = max(s_i, s_j) \in \Re^{600}
-\end{gathered}
-$$</p>
-
-<p>이 때 본 논문에서는 document자체의 특성에 더하여 $\textit{Mairesse}$ (2007)의 document feature를 추가해줍니다. 이 벡터는 document의 feature를 detection하는 데 도움을 주는 역할입니다. 총 84개의 feature를 포함하고 있습니다. 따라서 이를 모두 합쳐 classification에 넣을 vector를 생성합니다.</p>
-
-<p>$$
-\begin{gathered}
-d^{concat} = (d^{network}, d^{Mairesse}) \in \Re^{684}
-\end{gathered}
-$$</p>
-
-<ul>
-  <li><strong>Fully connected &amp; Output layer</strong>
-구해진 최종 document vector를 사용하여 Classification할 Personality에 해당하는지 아닌지 softmax function을 활용하여 확률을 예측합니다.</li>
-</ul>
-
-<p>$$
-\begin{gathered}
- p(i|\theta) = \frac{exp(x_i)}{exp(x_{yes})+exp(x_{no})}, \textit{for i} \in \text{[yes, no]}
-\end{gathered}
-$$</p>
-
-<p>여기까지 아키텍처를 구성하는 7가지의 layer들을 살펴보았습니다. 본 모델에 train이 필요한 부분은 총 3가지 layer입니다. Convolution layer에서의 word filter, Fully connectec layer에서의 weight와 bias, Softmax layer에서의 weight, bias이 이에 해당합니다. 저자는 이 파라미터들을 <strong>Negative log likelihood</strong>를 loss function으로 하여 <strong>Ada delta method</strong>로 학습시키고 있습니다.</p>
-
-<p>여기까지 논문의 리뷰를 마치고 다음 포스팅에서 본 모델을 활용한 기사 분류 프로젝트를 실습해보겠습니다!
-​</p>]]></content><author><name>HaeYong JOUNG</name></author><category term="Text-mining" /><category term="text-mining" /><summary type="html"><![CDATA[Deep Learning-Based Personality Detection from Text]]></summary></entry></feed>
+<p>본 프로젝트는 논문 리뷰와 실전 적용을 해본 것에 만족하고 마무리하도록 하겠습니다~!</p>]]></content><author><name>HaeYong JOUNG</name></author><category term="Text-mining" /><category term="text-mining" /><summary type="html"><![CDATA[Personality Detection from Text in Korean]]></summary></entry></feed>
