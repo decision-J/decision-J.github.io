@@ -25,14 +25,14 @@ Efficient Det은 구글 브레인의 이전 논문인 Efficient Net을 Backbone�
 $$ Efficient\, Det = BiFPN + Compound\, Scaling + Efficient\, Net$$
 
 <p align="center">
-  <img src="https://decision-J.github.io/assets/computer_vision/Effcient_Det/architecture.PNG" alt="Efficient Det architecture"/>
+  <img src="https://decision-J.github.io/assets/computer_vision/Effcient_Det/architecture.png" alt="Efficient Det architecture"/>
 </p>
 
 Backbone인 Effcient Net외에 *Bi-FPN*과 *Compound Scaling*이라는 두 기법이 추가로 더 적용되어 있는 것을 확인하실 수 있습니다. 지금부터 두 방법이 어떤 것인지 알아보도록 하겠습니다.
 
 ### Bi-FPN
 <p align="center">
-  <img src="https://decision-J.github.io/assets/computer_vision/Effcient_Det/bifpn.PNG" alt="Bi-FPN과 기존 Feature pyramid 방식들"/>
+  <img src="https://decision-J.github.io/assets/computer_vision/Effcient_Det/bifpn.png" alt="Bi-FPN과 기존 Feature pyramid 방식들"/>
 </p>
 
 기본적으로 Object detection 알고리즘들은 이미지나 비디오의 *feature*를 기준으로 detecting을 합니다. 이 때, 다양한 resolution에서 feature를 받아 분석하는 것을 **multi-scale feature fusion** 이라고 합니다. 대표적인 방식으로는 FPN(Feature Pyramid Network)이 있죠! FPN은 각 scale에서 feature를 받을 수 있지만 Top-Down 방식만 가능하다는 단점이 있습니다. 이에 Bottom-Up flow도 추가한 것이 PANet입니다. 가장 정확하다는 평가를 받는 feature fusion 방식입니다. 
@@ -58,7 +58,7 @@ R_{input} = 512 + \phi * 128
 $$
 
 <p align="center">
-  <img src="https://decision-J.github.io/assets/computer_vision/Effcient_Det/compound.PNG" alt="Compound Scaling"/>
+  <img src="https://decision-J.github.io/assets/computer_vision/Effcient_Det/compound.png" alt="Compound Scaling"/>
 </p>
 
 보시는 것처럼 각 scale별로 자동적으로 coefficient들이 결정되는 것을 볼 수 있습니다. 이를 통해 각 feature들이 조화롭게 학습되기를 바라는 것입니다.
@@ -68,7 +68,7 @@ $$
 Efficient Det이 기존 Object Detection 방법들에 비해 얼마나 좋은 성능을 갖고 있는지 확인해보겠습니다. 
 
 <p align="center">
-  <img src="https://decision-J.github.io/assets/computer_vision/Effcient_Det/result.PNG" alt="Experiment result"/>
+  <img src="https://decision-J.github.io/assets/computer_vision/Effcient_Det/result.png" alt="Experiment result"/>
 </p>
 
 논문에서 다양한 실험 결과들을 확인할 수 있지만 가장 대표적인 것으로 가져왔습니다. 위의 plot을 보시면 모델의 정확도가 다른 기존 방법론들과 비슷한데도 model의 parameter가 가장 작으며, hardware latency도 작음을 알 수 있습니다. 작지만 빠르고 강력한 모델이 바로 Efficient Det이라고 할 수 있겠네요!
