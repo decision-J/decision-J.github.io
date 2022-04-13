@@ -819,14 +819,14 @@ function googleTranslateElementInit() {
 <p>$$ Efficient\, Det = BiFPN + Compound\, Scaling + Efficient\, Net$$</p>
 
 <p align="center">
-  <img src="https://decision-J.github.io/assets/computer_vision/Effcient_Det/architecture.png" alt="Efficient Det architecture">
+  <img src="https://decision-J.github.io/assets/computer_vision/Efficient_Det/architecture.png" alt="Efficient Det architecture">
 </p>
 
 <p>Backbone인 Effcient Net외에 <em>Bi-FPN</em>과 <em>Compound Scaling</em>이라는 두 기법이 추가로 더 적용되어 있는 것을 확인하실 수 있습니다. 지금부터 두 방법이 어떤 것인지 알아보도록 하겠습니다.</p>
 
 <h3 id="bi-fpn">Bi-FPN</h3>
 <p align="center">
-  <img src="https://decision-J.github.io/assets/computer_vision/Effcient_Det/bifpn.png" alt="Bi-FPN과 기존 Feature pyramid 방식들">
+  <img src="https://decision-J.github.io/assets/computer_vision/Efficient_Det/bifpn.png" alt="Bi-FPN과 기존 Feature pyramid 방식들">
 </p>
 
 <p>기본적으로 Object detection 알고리즘들은 이미지나 비디오의 <em>feature</em>를 기준으로 detecting을 합니다. 이 때, 다양한 resolution에서 feature를 받아 분석하는 것을 <strong>multi-scale feature fusion</strong> 이라고 합니다. 대표적인 방식으로는 FPN(Feature Pyramid Network)이 있죠! FPN은 각 scale에서 feature를 받을 수 있지만 Top-Down 방식만 가능하다는 단점이 있습니다. 이에 Bottom-Up flow도 추가한 것이 PANet입니다. 가장 정확하다는 평가를 받는 feature fusion 방식입니다.</p>
@@ -852,7 +852,7 @@ R_{input} = 512 + \phi * 128
 $$</p>
 
 <p align="center">
-  <img src="https://decision-J.github.io/assets/computer_vision/Effcient_Det/compound.png" alt="Compound Scaling">
+  <img src="https://decision-J.github.io/assets/computer_vision/Efficient_Det/compound.png" alt="Compound Scaling">
 </p>
 
 <p>보시는 것처럼 각 scale별로 자동적으로 coefficient들이 결정되는 것을 볼 수 있습니다. 이를 통해 각 feature들이 조화롭게 학습되기를 바라는 것입니다.</p>
@@ -861,7 +861,7 @@ $$</p>
 <p>Efficient Det이 기존 Object Detection 방법들에 비해 얼마나 좋은 성능을 갖고 있는지 확인해보겠습니다.</p>
 
 <p align="center">
-  <img src="https://decision-J.github.io/assets/computer_vision/Effcient_Det/result.png" alt="Experiment result">
+  <img src="https://decision-J.github.io/assets/computer_vision/Efficient_Det/result.png" alt="Experiment result">
 </p>
 
 <p>논문에서 다양한 실험 결과들을 확인할 수 있지만 가장 대표적인 것으로 가져왔습니다. 위의 plot을 보시면 모델의 정확도가 다른 기존 방법론들과 비슷한데도 model의 parameter가 가장 작으며, hardware latency도 작음을 알 수 있습니다. 작지만 빠르고 강력한 모델이 바로 Efficient Det이라고 할 수 있겠네요!</p>
@@ -889,10 +889,10 @@ $$</p>
 <div class="post-related">
       <div>Related Articles</div>
       <ul>
-        <li><a class="post-link" href="/competition/2020/06/19/COVID-19-Modeling.html" title="">[Dacon] COVID-19 Modeling</a></li>
-<li><a class="post-link" href="/statistics/2021/07/28/Narrow-Confidence-Interval-for-low-N-&amp;-small-p.html" title="">Narrow Confidence Interval for low N &amp; small p</a></li>
-<li><a class="post-link" href="/competition/2020/12/30/Dacon-Korean-Summary-Extraction-Competition.html" title="">[Dacon] 한국어 문서 추출요약 AI 경진대회 참여기</a></li>
-<li><a class="post-link" href="/text-mining/2019/05/16/Gloval-Vectors-for-Word-Representation,-GloVe.md.html" title="">Gloval Vectors for Word Representation, GloVe</a></li>
+        <li><a class="post-link" href="/competition/2020/02/20/Walmart-Saletype-Classification.md.html" title="">[Kaggle] Walmart SaleType Classification</a></li>
+<li><a class="post-link" href="/papers/2021/05/31/Yolo_review.html" title="">[CV] YOLO v1</a></li>
+<li><a class="post-link" href="/papers/2021/09/27/YOLOX_review.html" title="">[CV] YOLOX</a></li>
+<li><a class="post-link" href="/papers/2021/07/26/Yolo_v2_review.html" title="">[CV] YOLO v2</a></li>
 </ul>
     </div>
 <div class="post-comments">  <div id="disqus_thread"></div>
