@@ -1,7 +1,7 @@
 ---
 layout: post
 categories: Statistics
-title:  "Narrow Confidence Interval for low N & small p"
+title:  "Narrow Confidence Interval for low N with small p"
 date:   2021-07-28
 author: HaeYong Joung
 tags: Statistics Confidence Interval proportion CI
