@@ -36,6 +36,8 @@ Anomaly attention은 기본적인 attention을 가지고 저자들이 time serie
 
 $$ 
 Prior Association: P = \frac{1}{\sqrt{2 \pi}\sigma_i} exp(-\frac{(|j-i|)^2}{2\sigma^2_i}), i,j\in {1, ..., N} 
+$$
+$$
 Series Association: S = Softmax(\frac{QK^T}{\sqrt{d_{model}}}) 
 $$
 
@@ -46,6 +48,8 @@ Association Discrepancy는 앞서 살펴본 prior association과 series associat
 
 $$ 
 AssDis(P,S; X) = \frac{1}{L} \sum^L_{l=1}(KL(P^l_i||S^l_i) + KL(S^l_i||P^l_i)) 
+$$
+$$
 where\,\, i=1,...,N
 $$
 
@@ -62,6 +66,8 @@ Mini max는 말 그대로 **Minimize phase, Maxmize phase** 두 부분으로 나
 
 $$ 
 Minimize: L_{Total}(\hat{X}, P, S_{detach}, -\lambda; X) 
+$$
+$$
 Maximize: L_{Total}(\hat{X}, P_{detach}, S, \lambda; X)
 $$
 
@@ -78,6 +84,8 @@ $$
 ### Association-based Anomaly Criterion
 $$ 
 Anomaly Score (X) = Softmax(-AssDis(P, S; X)) \odot (||X_{i, :}-\hat{X}_{i, :}||)^2 
+$$
+$$
 where\,\, i=1,...,N
 $$
 
