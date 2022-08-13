@@ -1,7 +1,7 @@
 ---
 layout: post
 categories: Papers
-title:  "[CV] Efficient Det"
+title:  "[Review] Efficient Det"
 date:   2022-04-13
 author: HaeYong Joung
 tags: CV object-detection Efficient-det

@@ -1,7 +1,7 @@
 ---
 layout: post
 categories: Papers
-title:  "[CV] YOLOX"
+title:  "[Review] YOLOX"
 date:   2021-09-27
 author: HaeYong Joung
 tags: CV object-detection yolo

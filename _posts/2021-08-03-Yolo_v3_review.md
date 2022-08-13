@@ -1,7 +1,7 @@
 ---
 layout: post
 categories: Papers
-title:  "[CV] YOLO v3"
+title:  "[Review] YOLO v3"
 date:   2021-08-03
 author: HaeYong Joung
 tags: CV object-detection yolo

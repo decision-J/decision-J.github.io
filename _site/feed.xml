@@ -5,20 +5,19 @@
     <description>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 12 Aug 2022 16:01:51 +0900</pubDate>
-    <lastBuildDate>Fri, 12 Aug 2022 16:01:51 +0900</lastBuildDate>
+    <pubDate>Sat, 13 Aug 2022 16:30:28 +0900</pubDate>
+    <lastBuildDate>Sat, 13 Aug 2022 16:30:28 +0900</lastBuildDate>
     <generator>Jekyll v4.1.1</generator>
     
       <item>
-        <title>[XAI] SHAP</title>
-        <description>&lt;h1 id=&quot;review-shap&quot;&gt;[Review] SHAP&lt;/h1&gt;
-
-&lt;p&gt;ML/DL 모형들이 널리 쓰여지면서 모형의 결과에 대해 해석이 가능한 지에 대한 연구도 활발히 진행되고 있습니다.(a.k.a. 설명 가능한 모형(eXplainable AI)) Feature Importance나 LIME과 같이 주로 변수들이 모형에 얼마나 영향을 미쳤는지를 파악하는 형태로 해석하게 되는데요! 이런 방법론 중 가장 이론적 뒷받침이 탄탄하다고 알려진 &lt;strong&gt;SHAP&lt;/strong&gt;에 대해 공부한 바를 간단히 정리해보고자 합니다.&lt;/p&gt;
+        <title>[Review] SHAP</title>
+        <description>&lt;p&gt;ML/DL 모형들이 널리 쓰여지면서 모형의 결과에 대해 해석이 가능한 지에 대한 연구도 활발히 진행되고 있습니다.
+주로 Feature Importance나 LIME과 같이 주로 변수들이 모형에 얼마나 영향을 미쳤는지를 파악하는 형태로 해석하게 되는데요! 이런 방법론 중 가장 이론적 뒷받침이 탄탄하다고 알려진 &lt;strong&gt;SHAP&lt;/strong&gt;에 대해 공부한 바를 간단히 정리해보고자 합니다.&lt;/p&gt;
 
 &lt;hr /&gt;
 
 &lt;h3 id=&quot;shap이란&quot;&gt;SHAP이란?&lt;/h3&gt;
-&lt;p&gt;SHAP(SHapley Additive exPlanation)은 Shapley value를 활용하여 모형의 결과에 대해서 각 특성(변수)의 기여도가 어느 정도인지 계산하는 방법론입니다. 이 기여도를 통해서 어떤 변수가 모형의 결정에 얼마나 영향을 미쳤는지 확인할 수 있고, 이를 통해 모형을 해석하는 것이지요. 방법론의 목적이나 아이디어는 Permutation기반의 feature importance와 차이가 없습니다만, SHAP의 경우가 좀 더 이론적 배경이 탄탄하며, 변수의 기여도를 계산할 때 조건부 확률의 개념을 적용함으로써 변수 간의 상관관계에 영향을 덜 받는다는 장점이 있습니다. SHAP의 저자인 Lunberg와 Lee는 kernel SHAP과 Tree SHAP의 두 방법을 제안했습니다. 이 방법론들을 알아보기 전에 먼저 Shapley value에 대해서 간단히 확인해보겠습니다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;SHAP(SHapley Additive exPlanation)&lt;/strong&gt;은 Shapley value를 활용하여 모형의 결과에 대해서 각 특성(변수)의 기여도가 어느 정도인지 계산하는 방법론입니다. 이 기여도를 통해서 어떤 변수가 모형의 결정에 얼마나 영향을 미쳤는지 확인할 수 있고, 이를 통해 모형을 해석하는 것이지요. 방법론의 목적이나 아이디어는 Permutation기반의 feature importance와 차이가 없습니다만, SHAP의 경우가 좀 더 이론적 배경이 탄탄하며, 변수의 기여도를 계산할 때 조건부 확률의 개념을 적용함으로써 변수 간의 상관관계에 영향을 덜 받는다는 장점이 있습니다. SHAP의 저자인 Lunberg와 Lee는 kernel SHAP과 Tree SHAP의 두 방법을 제안했습니다. 이 방법론들을 알아보기 전에 먼저 Shapley value에 대해서 간단히 확인해보겠습니다.&lt;/p&gt;
 
 &lt;h3 id=&quot;shapley-value&quot;&gt;Shapley Value&lt;/h3&gt;
 &lt;p&gt;Shapley value는 게임 이론에서 파생된 개념이라고 합니다. 어떤 결과를 위해 참여자들(players)들이 얼마나 기여했는지를 계산하는 것이라고 하는데요. XAI에서는 이 개념이 각 변수들을 참여자들로 보고 모형의 결과를 나타내기 위해 변수들이 얼마나 기여했는지를 계산하는 방식으로 쓰여집니다. 구체적으로 어떤 개념인지 유명한 사례를 통해 살펴보겠습니다.&lt;/p&gt;
@@ -43,13 +42,13 @@ Shapley value는 여기서 그치지 않고 &lt;strong&gt;다른 두 변수의 �
 &lt;h3 id=&quot;kernel-shap&quot;&gt;Kernel SHAP&lt;/h3&gt;
 &lt;p&gt;앞서 SHAP은 Shapley value를 활용하여 변수 기여도를 계산한다고 말씀드렸습니다. 그 중에서 가장 먼저 나온 Kernel SHAP의 매커니즘을 살펴보겠습니다.&lt;/p&gt;
 
-&lt;ol&gt;
+&lt;ul&gt;
   &lt;li&gt;Sample coalitions $ z_k \in ${0,1}$^M, k \in ${1,…,K}$ $ (1=feature present in coalition, 0=feature absent)&lt;/li&gt;
   &lt;li&gt;Get prediction for each $z_k$ by first converting $z_k$ to the original feature space and then applying model $g$ : $g(h_x(z_k))$&lt;/li&gt;
   &lt;li&gt;Compute weight for each $z_k$ with the SHAP kernel&lt;/li&gt;
   &lt;li&gt;Fit weigted linear model&lt;/li&gt;
   &lt;li&gt;Return Shapley value $\phi_k$, the coefficients from the linear model&lt;/li&gt;
-&lt;/ol&gt;
+&lt;/ul&gt;
 
 &lt;p&gt;복잡해보이지만 하나씩 살펴보면 아이디어는 어렵지 않습니다. 우선 $z_k$부터 이해해보면 변수가 있으면 1, 없으면 0으로 표시하는 조합들입니다. NLP에서의 one-hot embedding과 똑같은 개념이라고 이해하면 될 것 같습니다. 이렇게 나타내는 이유는 위의 shapley value에서 살펴본 것처럼 변수의 존재 유무의 조합에 따라 변수 기여도를 계산하기 위해서 입니다.&lt;/p&gt;
 
@@ -86,8 +85,9 @@ $$&lt;/p&gt;
   &lt;img src=&quot;https://decision-J.github.io/assets/Post Images/SHAP3.png&quot; /&gt;
 &lt;/p&gt;
 
-&lt;p&gt;파이썬에서 SHAP 라이브러리를 통해 나온 결과입니다. 세로 축에는 모형이 사용하고 있는 변수들이 쭉 나열되고 가로 축에는 각 변수들의 SHAP value들이 표현됩니다. SHAP value의 절대값이 클수록 모형에 기여하는 영향이 큰 것입니다. 오른쪽 이중축에는 변수 자체의 값에 대해 표현되고 있는데요, 빨간 색일수록 큰 것이고 파랑색일수록 작은 값이라는 뜻입니다. 플랏을 해석해보자면, 먼저 맨 위의 변수인 &lt;em&gt;Hormonal Contraceptives years&lt;/em&gt;를 살펴보면 Shap value가 음수인 부분에는 파란색 점이, 양수인 부분에는 빨간점이 비교적 많이 분포하는 것을 확인할 수 있습니다. 이를 해석해보면 이 변수의 값이 작을 수록 모형의 결과 값에는 -, 음의 영향을 미치는 것을 알 수 있고, 값이 클수록 모형에 + 영향을 미칩니다. 특히, 변수의 값이 클 때 비교적 모형에 많이 기여하는 것을 확인할 수 있네요! 
-또 아래 쪽에 존재하는 변수들은 대부분 값이 클수록 모형에 양의 영향을 미치는 것을 알 수 있습니다.&lt;/p&gt;
+&lt;p&gt;파이썬에서 SHAP 라이브러리를 통해 나온 결과입니다. 세로 축에는 모형이 사용하고 있는 변수들이 쭉 나열되고 가로 축에는 각 변수들의 SHAP value들이 표현됩니다. SHAP value의 절대값이 클수록 모형에 기여하는 영향이 큰 것입니다. 오른쪽 이중축에는 변수 자체의 값에 대해 표현되고 있는데요, 빨간 색일수록 큰 것이고 파랑색일수록 작은 값이라는 뜻입니다.&lt;/p&gt;
+
+&lt;p&gt;플랏을 해석해보자면, 먼저 맨 위의 변수인 &lt;em&gt;Hormonal Contraceptives years&lt;/em&gt;를 살펴보면 Shap value가 음수인 부분에는 파란색 점이, 양수인 부분에는 빨간점이 비교적 많이 분포하는 것을 확인할 수 있습니다. 이를 해석해보면 이 변수의 값이 작을 수록 모형의 결과 값에는 -, 음의 영향을 미치는 것을 알 수 있고, 값이 클수록 모형에 + 영향을 미칩니다. 특히, 변수의 값이 클 때 비교적 모형에 많이 기여하는 것을 확인할 수 있네요!&lt;/p&gt;
 
 &lt;hr /&gt;
 &lt;h3 id=&quot;reference&quot;&gt;Reference&lt;/h3&gt;
@@ -119,7 +119,7 @@ $$&lt;/p&gt;
       </item>
     
       <item>
-        <title>[Time Series] Anomaly Transformer</title>
+        <title>[Review] Anomaly Transformer</title>
         <description>&lt;h1 id=&quot;paper-review-anomaly-transformer&quot;&gt;[Paper review] Anomaly Transformer&lt;/h1&gt;
 
 &lt;p&gt;시계열 데이터의 이상치 탐색 방법론으로서 Transformer 매커니즘을 활용한 &lt;strong&gt;Anomaly Transformer&lt;/strong&gt;에 대해 리뷰해보겠습니다. ICLR 2022 의 spotlight 논문이라고 하네요!&lt;/p&gt;
@@ -131,36 +131,80 @@ $$&lt;/p&gt;
 &lt;hr /&gt;
 
 &lt;h3 id=&quot;idea&quot;&gt;Idea&lt;/h3&gt;
-&lt;p&gt;&lt;strong&gt;Anomaly Transformer&lt;/strong&gt;는 이름에서 알 수 있듯이 &lt;em&gt;Transformer&lt;/em&gt;를 활용하여 시계열 데이터에서의 &lt;em&gt;Anomaly detection&lt;/em&gt;을 잘 해보자는 목적을 가지고 있습니다. 이상점을 탐색하는 방법으로는 reconstruction based 방법을 사용하고 있습니다. Unsupervised learning으로 주어진 train 시계열 데이터의 패턴을 통해 정상 시계열 패턴을 잘 재구축 하도록 모형을 학습시킵니다. 추후에 test set이 들어왔을 때, 모형이 재구축(reconstruction)한 시계열 패턴과의 비교를 통해 그 차이가 큰 (anomaly score가 큰) 지점을 이상점으로 탐색하는 방법론입니다. 이 때, 정상 시계열 패턴을 잘 학습하도록 해주기 위해 Transformer를 활용합니다. Self-attention을 이상점 탐지에 특화되게 바꾼 Anomaly-attention을 제안하였습니다. 그럼 Anomaly Transformer에 대해 본격적으로 알아보도록 하겠습니다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Anomaly Transformer&lt;/strong&gt;는 이름에서 알 수 있듯이 &lt;em&gt;Transformer&lt;/em&gt;를 활용하여 시계열 데이터에서의 &lt;em&gt;Anomaly detection&lt;/em&gt;을 잘 해보자는 목적을 가지고 있습니다. 이상점을 탐색하는 방법으로는 reconstruction based 방법을 사용하고 있습니다. Reconstruction based 방식이란 주어진 train 시계열 데이터의 패턴을 통해 정상 시계열 패턴을 잘 재구축 하도록 모형을 학습시킵니다. (이 때 label이 따로 필요 없기 때문에 unsupervised learning입니다.) 추후에 test set이 들어왔을 때, 모형이 재구축(reconstruction)한 시계열 패턴과의 비교를 통해 그 차이가 큰 (anomaly score가 큰) 지점을 이상점으로 탐색하는 방법론입니다. 이 때, 정상 시계열 패턴을 잘 학습하도록 해주기 위해 Transformer를 활용합니다. Self-attention을 이상점 탐지에 특화되게 바꾼 Anomaly-attention을 제안하였습니다. 그럼 Anomaly Transformer에 대해 본격적으로 알아보도록 하겠습니다.&lt;/p&gt;
 
 &lt;h3 id=&quot;anomaly-transformer&quot;&gt;Anomaly Transformer&lt;/h3&gt;
 &lt;p&gt;Anomaly Transformer의 architecture는 다음과 같습니다.&lt;/p&gt;
 
 &lt;p align=&quot;center&quot;&gt;
-  &lt;img src=&quot;https://decision-J.github.io/assets/Anomaly_Detection/Anomaly_Transformer/Architecture.png&quot; alt=&quot;Anomaly Transformer architecture&quot; /&gt;
+  &lt;img src=&quot;https://decision-J.github.io/assets/Post Images/Anomaly Transformer.png&quot; alt=&quot;Anomaly Transformer architecture&quot; /&gt;
 &lt;/p&gt;
 
 &lt;p&gt;Input embedding $X_{0}$가 들어오면 크게 &lt;strong&gt;Anomaly Attenion&lt;/strong&gt; layer와 Feed Forward layer를 L번 반복 수행하며 input time series의 pattern을 학습하게 됩니다. 이후 이 학습된 정보를 가지고 가장 보편적인 pattern의 reconstruction data를 산출하는데요! 이 구조에서 가장 주목해야 하고, Anomaly transformer가 높은 성능을 가지는 이유는 단연 Anomaly attention일 것입니다.&lt;/p&gt;
 
 &lt;h3 id=&quot;anomaly-attention&quot;&gt;Anomaly Attention&lt;/h3&gt;
-&lt;p&gt;Anomaly attention은 기본적인 attention을 가지고 저자들이 time series anomaly detection에 맞게 매커니즘을 조금 수정한 형태입니다. 가장 큰 부분은 attention 내부를 &lt;em&gt;Prior-Association&lt;/em&gt;과 &lt;em&gt;Series-Association&lt;/em&gt;의 두 가지로 나누었다는 것입니다. 
-먼저 prior association은 이름에서 알 수 있듯이, 모형에서 사용하는 Gaussian kernel의 시그마를 학습합니다. Gaussian Kernel은 attention의 Query, Key를 학습할 때 영향을 줍니다. 커널을 통해 다양한 패턴의 시계열 자료에 적용할 수 있다고 저자는 설명하고 있습니다. Series asssociation은 Query와 Key를 학습하는 부분입니다. 저자들은 이 두 association을 통해서(정확히는 prior association) 시계열 자료를 point-wise가 아닌, temporal dependency를 학습할 수 있다고 설명합니다. Gaussian Kernel의 $\sigma$를 통해서 인접한 time point에 더 큰 가중치를 줄 수 있다는 것이지요.&lt;/p&gt;
+&lt;p&gt;Anomaly attention은 기본적인 attention을 가지고 저자들이 time series anomaly detection에 맞게 매커니즘을 조금 수정한 형태입니다. 가장 큰 부분은 attention 내부를 &lt;em&gt;Prior-Association&lt;/em&gt;과 &lt;em&gt;Series-Association&lt;/em&gt;의 두 가지로 나누었다는 것입니다.&lt;/p&gt;
+
+&lt;p&gt;$$ 
+Prior Association: P = \frac{1}{\sqrt{2 \pi}\sigma_i} exp(-\frac{(|j-i|)^2}{2\sigma^2_i}), i,j\in {1, …, N} 
+$$
+$$ Series Association: S = Softmax(\frac{QK^T}{\sqrt{d_{model}}}) $$&lt;/p&gt;
+
+&lt;p&gt;먼저 &lt;strong&gt;prior association&lt;/strong&gt;은 이름에서 알 수 있듯이, 모형에서 사용하는 Gaussian kernel의 시그마를 학습합니다. Gaussian Kernel은 attention의 Query, Key를 학습할 때 영향을 줍니다. 커널을 통해 다양한 패턴의 시계열 자료에 적용할 수 있다고 저자는 설명하고 있습니다. &lt;strong&gt;Series asssociation&lt;/strong&gt;은 Query와 Key를 학습하는 부분입니다. 저자들은 이 두 association을 통해서(정확히는 prior association) 시계열 자료를 point-wise가 아닌, temporal dependency를 학습할 수 있다고 설명합니다. Gaussian Kernel의 $\sigma$를 통해서 인접한 time point에 더 큰 가중치를 줄 수 있다는 것이지요.&lt;/p&gt;
 
 &lt;h3 id=&quot;association-discrepancy&quot;&gt;Association Discrepancy&lt;/h3&gt;
-&lt;p&gt;Association Discrepancy는 앞서 살펴본 prior association과 series association간의 차이를 계산하는 것입니다. 차이를 계산하는 방법은 KL divergence를 활용하였으며, KL divergence의 assymetric한 점을 보완하기 위해 순서를 바꿔가며 계산한 평균을 사용하였습니다. Anomaly attention은 이 지표를 활용하여 가중치를 업데이트 하게 됩니다.&lt;/p&gt;
+&lt;p&gt;Association Discrepancy는 앞서 살펴본 prior association과 series association간의 차이를 계산하는 것입니다. 차이를 계산하는 방법은 KL divergence를 활용하였으며, KL divergence의 assymetric한 점을 보완하기 위해 순서를 바꿔가며 계산한 평균을 사용하였습니다. Association Discrepancy는 Loss function의 한 term으로 포함되며 가중치를 업데이트 하는데 사용하기도 하고 추후 anomaly score를 계산하는 데에도 사용됩니다.&lt;/p&gt;
 
 &lt;p&gt;$$ AssDis(P,S; X) = \frac{1}{L} \sum^L_{l=1}(KL(P^l_i||S^l_i) + KL(S^l_i||P^l_i)) $$
 $$ where\,\, i=1,…,N $$&lt;/p&gt;
 
 &lt;h3 id=&quot;mini-max-association-learning&quot;&gt;Mini Max Association Learning&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;Mini Max Strategy&lt;/li&gt;
-  &lt;li&gt;Association-based Anomaly Criterion&lt;/li&gt;
-&lt;/ul&gt;
+&lt;p&gt;저자들은 Attention 내부에 prior &amp;amp; series association 두 개의 term이 있는 만큼 이를 활용하여 Loss function을 병렬적으로 구성하는 mini max learning strategy를 제안합니다. 우선 Anomaly transformer에서 사용하는 Loss function은 다음과 같습니다.&lt;/p&gt;
+
+&lt;p&gt;$$
+L_{total}(\hat{X}, P, S, \lambda; X) = (||X-\hat{X}||)^2_F - \lambda \cdot ||AssDis(P, S; X)||
+$$&lt;/p&gt;
+
+&lt;p&gt;수식을 보면 $\lambda$ term에 의해 Association discrepancy가 조절됨을 알 수 있습니다. $\lambda$가 0보다 크면 모형은 association discrepancy를 더 크게 만드는 방향으로 학습이 진행되며, 0보다 작으면 반대로 작게 만드는 방향으로 학습이 진행됩니다. 이 개념을 활용한 것이 바로 &lt;strong&gt;Mini max Strategy&lt;/strong&gt; 입니다.&lt;/p&gt;
+
+&lt;p&gt;Mini max는 말 그대로 &lt;strong&gt;Minimize phase, Maxmize phase&lt;/strong&gt; 두 부분으로 나누어 Loss function을 다르게 적용하는 것입니다.&lt;/p&gt;
+
+&lt;p&gt;$$ Minimize: L_{Total}(\hat{X}, P, S_{detach}, -\lambda; X) $$
+$$ Maximize: L_{Total}(\hat{X}, P_{detach}, S, \lambda; X) $$&lt;/p&gt;
+
+&lt;p&gt;수식에서 알 수 있듯이, Minimize phase때는 Prior association을 학습하고, Maximize phase 때는 Series association을 학습합니다. 이 때, $\lambda$의 부호에 따라 학습의 방향이 달라지는 것입니다. 논문의 그림을 보면 좀 더 이해하기 쉽습니다.&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;
+  &lt;img src=&quot;https://decision-J.github.io/assets/Post Images/Anomaly Transformer2.png&quot; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;먼저 왼편의 &lt;strong&gt;Minimize phase&lt;/strong&gt;를 보면 Loss function의 $\lambda$ 가 0보다 작기 때문에, association discrepancy, 즉, Prior association과 Series association의 차이를 작게 만들어주는 방향으로 학습됩니다. 이를 해석해보면 Gausian prior의 $\sigma$를 주어진 time series pattern에 가장 적절하게 tuning시켜주는 작업이라고도 할 수 있을 것 같습니다.&lt;/p&gt;
+
+&lt;p&gt;중요한 것은 오른쪽의 &lt;strong&gt;Maxmize phase&lt;/strong&gt;인데요. 사실상 이 부분을 통해 모형이 Anomaly를 찾는다고도 할 수 있겠습니다. 앞 서와는 달리 $\lambda$가 0보다 크므로 두 association간의 차이가 커지도록 학습을 하게 됩니다. 따라서 그림에서와 같이 시계열 내에서 anomaly pattern을 보이는 시점에서의 경우 Association discrepancy가 더 커지도록 (벌어지도록) 해줍니다.&lt;/p&gt;
+
+&lt;h3 id=&quot;association-based-anomaly-criterion&quot;&gt;Association-based Anomaly Criterion&lt;/h3&gt;
+&lt;p&gt;$$ Anomaly Score (X) = Softmax(-AssDis(P, S; X)) \odot (||X_{i, :}-\hat{X}_{i, :}||)^2 $$
+$$ where\,\, i=1,…,N $$&lt;/p&gt;
+
+&lt;p&gt;Anomaly Transformer가 Anomaly들을 detect하는 score입니다. 기본적으로 reconstruction error를 기반으로 탐색을 하지만, 본 모형만의 Association discrepancy term이 추가되어 상호 협력적으로 이상점을 탐지하는 것을 확인할 수 있습니다. 이를 통해 성능을 더욱 향상시킬 수 있다고 저자들은 설명합니다.&lt;/p&gt;
 
 &lt;h3 id=&quot;experiments&quot;&gt;Experiments&lt;/h3&gt;
+&lt;p&gt;본 논문의 가장 경악(?)스러운 부분은 바로 이 실험 결과 부분입니다. 저자들은 Anomaly transformer의 탐지 성능을 실험하기 위해 15개의 이상치 탐색 관련 모형들과 비교하였으며 이를 위해 5개의 서로 다른 시계열 데이터들을 사용했습니다. 그 결과는 다음과 같습니다.&lt;/p&gt;
 
-&lt;h3 id=&quot;느낀점&quot;&gt;느낀점&lt;/h3&gt;
+&lt;p align=&quot;center&quot;&gt;
+  &lt;img src=&quot;https://decision-J.github.io/assets/Post Images/Anomaly Transformer3.png&quot; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;전체 5개의 데이터 셋에서 저 수많은 모형들 중 Anomaly transformer가 압도적인 SOTA를 달성함을 확인할 수 있습니다. 심지어 모든 데이터에서 F1 score가 90을 넘는 기염을 토하는데요. 
+이를 그림으로 직관적으로 확인해보아도 놀랍습니다.&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;
+  &lt;img src=&quot;https://decision-J.github.io/assets/Post Images/Anomaly Transformer4.png&quot; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;가장 윗 줄이 input으로 들어간 original 시계열 자료의 모습이고 그 아래로 각 모형이 계산한 anomaly score들이 나타나 있습니다. 원 자료에서 빨간색으로 표시되어 있는 이상점 부분에서의 score가 높아야만 모형이 이상치로 탐색할 수 있습니다. 그림을 살펴보면 맨 아래쪽 행에 있는 Anomaly transformer는 모든 이상점 구간에서 정확히 score가 높아져, 이상치를 잘 판별하고 있습니다. 이에 비해 다른 모형들은 (특히 point-contextual 이상 패턴에서) 이상치를 탐지하는 데 어려움을 보이는 case가 존재함을 확인할 수 있습니다.&lt;/p&gt;
+
+&lt;p&gt;지금까지 Anomaly transformer에 대해 알아보았습니다. 기존 언어 모형에서 활용되던 Transformer를 시계열에도 적용한 점이 인상깊었습니다. Transformer의 압도적 성능 덕분인지, Association discrepancy등 저자들이 새로 제시한 아이디어 덕분인지 (아마 종합적으로 작용했을 것 같네요) 어마어마한 SOTA모형이 탄생한 것 같아 흥미롭습니다!&lt;/p&gt;
 
 &lt;hr /&gt;
 &lt;h3 id=&quot;reference&quot;&gt;Reference&lt;/h3&gt;
@@ -171,69 +215,6 @@ $$ where\,\, i=1,…,N $$&lt;/p&gt;
   &lt;li&gt;Github: &lt;a href=&quot;https://github.com/thuml/Anomaly-Transformer&quot;&gt;Code (Pytorch)&lt;/a&gt;&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;h3 id=&quot;architeture&quot;&gt;Architeture&lt;/h3&gt;
-&lt;p&gt;Efficient Det은 구글 브레인의 이전 논문인 Efficient Net을 Backbone으로 활용한 Object detection 버전 모델입니다. 논문 곳곳에서 효율적이고 가볍다는 언급을 자주 할만큼 효율성에 집중한 듯 하지만 정확도 또한 20년 기준 SOTA를 달성한 굉장한 모형입니다. 기본적으로 YOLO 등과 비슷하게 One stage detection 구조를 가지고 있습니다. 자세한 아키텍처는 아래와 같이 표현할 수 있습니다.&lt;/p&gt;
-
-&lt;p&gt;$$ Efficient\, Det = BiFPN + Compound\, Scaling + Efficient\, Net$$&lt;/p&gt;
-
-&lt;p align=&quot;center&quot;&gt;
-  &lt;img src=&quot;https://decision-J.github.io/assets/computer_vision/Efficient_Det/architecture.png&quot; alt=&quot;Efficient Det architecture&quot; /&gt;
-&lt;/p&gt;
-
-&lt;p&gt;Backbone인 Effcient Net외에 &lt;em&gt;Bi-FPN&lt;/em&gt;과 &lt;em&gt;Compound Scaling&lt;/em&gt;이라는 두 기법이 추가로 더 적용되어 있는 것을 확인하실 수 있습니다. 지금부터 두 방법이 어떤 것인지 알아보도록 하겠습니다.&lt;/p&gt;
-
-&lt;h3 id=&quot;bi-fpn&quot;&gt;Bi-FPN&lt;/h3&gt;
-&lt;p align=&quot;center&quot;&gt;
-  &lt;img src=&quot;https://decision-J.github.io/assets/computer_vision/Efficient_Det/bifpn.png&quot; alt=&quot;Bi-FPN과 기존 Feature pyramid 방식들&quot; /&gt;
-&lt;/p&gt;
-
-&lt;p&gt;기본적으로 Object detection 알고리즘들은 이미지나 비디오의 &lt;em&gt;feature&lt;/em&gt;를 기준으로 detecting을 합니다. 이 때, 다양한 resolution에서 feature를 받아 분석하는 것을 &lt;strong&gt;multi-scale feature fusion&lt;/strong&gt; 이라고 합니다. 대표적인 방식으로는 FPN(Feature Pyramid Network)이 있죠! FPN은 각 scale에서 feature를 받을 수 있지만 Top-Down 방식만 가능하다는 단점이 있습니다. 이에 Bottom-Up flow도 추가한 것이 PANet입니다. 가장 정확하다는 평가를 받는 feature fusion 방식입니다.&lt;/p&gt;
-
-&lt;p&gt;하지만 이러한 PANet은 굉장히 많은 parameter를 가질 수 밖에 없기 때문에 cost가 늘어난다는 단점이 있습니다. (이 단점을 해결하기 위해 NAS-FPN이 등장했지만 정확도가 떨어집니다.) Bi-FPN은 본 논문에서 제시하는 방법론으로, 정확성을 담보하면서도 PANet보다 효율적인 구조입니다. 개인적으로는 PANet 기본 구조에 효율성을 갖도록 몇 가지를 수정한 방법이라고 보여집니다.&lt;/p&gt;
-
-&lt;p&gt;우선 Bi-FPN의 Scale connection 부분부터 살펴보겠습니다. Bi-FPN은 PANet과는 달리 input edge만을 갖는 노드는 없게 설계하여 parameter를 줄였습니다. 또한 Same level의 input node는 바로 bottom-up 단계의 output node로 연결하여 많은 cost없이 feature fusion이 일어나도록 설계했습니다. 마지막으로 Top-down / Bottom-up path들을 NAS-FPN처럼 반복함으로써 정확도를 확보했습니다.&lt;/p&gt;
-
-&lt;p&gt;이렇게 연결된 feature들을 fusion하는 방법에 대해 알아보겠습니다. 기본적으로 각 Input들을 그냥 결합할 경우 scale에 따라 가중치가 달라지기 때문에, 이를 반영하여 결합하는 것이 각 scale의 주요 특징들을 반영하는 데 중요합니다. 본 논문에서는 &lt;em&gt;Fast Normalized fusion&lt;/em&gt;을 사용해서 빠르게 결합하는 방식을 사용했습니다.&lt;/p&gt;
-
-&lt;p&gt;$$ O = \sum_i \frac{w_i}{\epsilon+\sum_j w_j} * I_i$$&lt;/p&gt;
-
-&lt;h3 id=&quot;compound-scaling&quot;&gt;Compound Scaling&lt;/h3&gt;
-&lt;p&gt;앞 서 Bi-FPN에서 반복을 통해 feature들을 파악한다고 했는데요! 그러면 layer의 반복 수는 어떻게 정하면 될까요? 또 Efficient Det의 scale을 키울 때, 각각의 channel이나 layer들은 어떻게 정해야 효율적으로 scale up 할 수 있을까요? 이런 것들을 정하는 것이 &lt;strong&gt;Compound Scaling&lt;/strong&gt; 파트입니다.&lt;/p&gt;
-
-&lt;p&gt;결론적으로 말하면 케이스 별로 optimize해주는 것은 아니고 저자들이 실험을 통해 최적의 궁합을 찾았다는 것입니다. 저자들은 &lt;em&gt;compound coefficient&lt;/em&gt; $\phi$를 사용하여 각 scale에서의 layer 수, channel 수, dimmension 등을 컨트롤합니다. Compound coefficient가 컨트롤하는 정보들은 다음과 같습니다.&lt;/p&gt;
-
-&lt;p&gt;$$
-W_{bifpn} = 64 * 1.35^\phi \\ 
-D_{bifpn} = 3 + \phi &lt;br /&gt;
-D_{box} = D_{class} = 3 + [\phi/3]
-R_{input} = 512 + \phi * 128
-$$&lt;/p&gt;
-
-&lt;p align=&quot;center&quot;&gt;
-  &lt;img src=&quot;https://decision-J.github.io/assets/computer_vision/Efficient_Det/compound.png&quot; alt=&quot;Compound Scaling&quot; /&gt;
-&lt;/p&gt;
-
-&lt;p&gt;보시는 것처럼 각 scale별로 자동적으로 coefficient들이 결정되는 것을 볼 수 있습니다. 이를 통해 각 feature들이 조화롭게 학습되기를 바라는 것입니다.&lt;/p&gt;
-
-&lt;h3 id=&quot;experiment-results&quot;&gt;Experiment Results&lt;/h3&gt;
-&lt;p&gt;Efficient Det이 기존 Object Detection 방법들에 비해 얼마나 좋은 성능을 갖고 있는지 확인해보겠습니다.&lt;/p&gt;
-
-&lt;p align=&quot;center&quot;&gt;
-  &lt;img src=&quot;https://decision-J.github.io/assets/computer_vision/Efficient_Det/result.png&quot; alt=&quot;Experiment result&quot; /&gt;
-&lt;/p&gt;
-
-&lt;p&gt;논문에서 다양한 실험 결과들을 확인할 수 있지만 가장 대표적인 것으로 가져왔습니다. 위의 plot을 보시면 모델의 정확도가 다른 기존 방법론들과 비슷한데도 model의 parameter가 가장 작으며, hardware latency도 작음을 알 수 있습니다. 작지만 빠르고 강력한 모델이 바로 Efficient Det이라고 할 수 있겠네요!&lt;/p&gt;
-
-&lt;h3 id=&quot;마무리&quot;&gt;마무리&lt;/h3&gt;
-&lt;p&gt;지금까지 Efficient Det에 대해 살펴보았습니다. 개인적으로는 parameter 수를 최대한 줄이며 효율성을 추구했는데도 성능이 증가한 부분이 인상 깊습니다. 다만 Compound scaling 부분에서 처럼 hueristic하게 parameter들을 결정해도 모든 케이스에 대해서 같은 성능을 담보할 수 있을지 궁금합니다. &lt;del&gt;(물론 굉장히 유명한 모델인만큼 그럴 것이라 믿어 의심치 않습니다 ㅎㅎ)&lt;/del&gt;&lt;/p&gt;
-
-&lt;hr /&gt;
-&lt;h3 id=&quot;reference-1&quot;&gt;Reference&lt;/h3&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;Paper: &lt;a href=&quot;https://openaccess.thecvf.com/content_CVPR_2020/papers/Tan_EfficientDet_Scalable_and_Efficient_Object_Detection_CVPR_2020_paper.pdf&quot;&gt;Efficient Det&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;Github: &lt;a href=&quot;https://github.com/google/automl/tree/master/efficientdet&quot;&gt;google/automl/Efficient Det&lt;/a&gt;&lt;/li&gt;
-&lt;/ol&gt;
 </description>
         <pubDate>Tue, 28 Jun 2022 00:00:00 +0900</pubDate>
         <link>http://localhost:4000/papers/2022/06/28/Anomaly-Transformer.html</link>
@@ -253,7 +234,7 @@ $$&lt;/p&gt;
       </item>
     
       <item>
-        <title>[CV] Efficient Det</title>
+        <title>[Review] Efficient Det</title>
         <description>&lt;h1 id=&quot;paper-review-efficient-det&quot;&gt;[Paper review] Efficient Det&lt;/h1&gt;
 
 &lt;p&gt;가볍고 효율적인 방식임을 강조하지만 정확성도 놓치지 않은 구글의 &lt;strong&gt;Efficient Det&lt;/strong&gt; 논문을 리뷰해보겠습니다.&lt;/p&gt;
@@ -429,7 +410,7 @@ Github blog를 처음 만들고 나면 favicon이 없어서 페이지 탭에 지
       </item>
     
       <item>
-        <title>[CV] YOLOX</title>
+        <title>[Review] YOLOX</title>
         <description>&lt;h1 id=&quot;paper-review-yolox&quot;&gt;[Paper review] YOLOX&lt;/h1&gt;
 
 &lt;p&gt;YOLO series의 2021년 가장 최신 버전, &lt;strong&gt;YOLO X&lt;/strong&gt; 를 리뷰해보려고 합니다.&lt;/p&gt;
@@ -550,7 +531,7 @@ Github blog를 처음 만들고 나면 favicon이 없어서 페이지 탭에 지
       </item>
     
       <item>
-        <title>[CV] YOLO v3</title>
+        <title>[Review] YOLO v3</title>
         <description>&lt;h1 id=&quot;paper-review-yolo_v3&quot;&gt;[Paper review] YOLO_v3&lt;/h1&gt;
 
 &lt;p&gt;YOLO series의 3번째 버전, &lt;strong&gt;YOLO v3&lt;/strong&gt; 입니다. (이전 버전 리뷰: &lt;a href=&quot;https://decision-j.github.io/computer-vision/2021/05/31/Yolo_review.html&quot;&gt;YOLO v1 review&lt;/a&gt;,  &lt;a href=&quot;https://decision-j.github.io/computer-vision/2021/07/26/Yolo_v2_review.html&quot;&gt;YOLO v2 review&lt;/a&gt;)&lt;/p&gt;
@@ -849,7 +830,7 @@ $$&lt;/p&gt;
       </item>
     
       <item>
-        <title>[CV] YOLO v2</title>
+        <title>[Review] YOLO v2</title>
         <description>&lt;h1 id=&quot;paper-review-yolo_v2&quot;&gt;[Paper review] YOLO_v2&lt;/h1&gt;
 
 &lt;p&gt;이전 포스팅의 &lt;a href=&quot;https://decision-j.github.io/computer-vision/2021/05/31/Yolo_review.html&quot;&gt;YOLO v1&lt;/a&gt;에 후속 버전인 YOLO v2에 대해 리뷰해보고자 합니다.&lt;/p&gt;
@@ -1276,7 +1257,7 @@ if (save_labels){
       </item>
     
       <item>
-        <title>[CV] YOLO v1</title>
+        <title>[Review] YOLO v1</title>
         <description>&lt;h1 id=&quot;paper-review-yolo_v1&quot;&gt;[Paper review] YOLO_v1&lt;/h1&gt;
 
 &lt;p&gt;Object detection에 관한 논문들을 읽어보고자 합니다.
