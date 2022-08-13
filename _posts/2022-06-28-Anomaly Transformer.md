@@ -34,9 +34,7 @@ Input embedding $X_{0}$가 들어오면 크게 **Anomaly Attenion** layer와 Fee
 ### Anomaly Attention
 Anomaly attention은 기본적인 attention을 가지고 저자들이 time series anomaly detection에 맞게 매커니즘을 조금 수정한 형태입니다. 가장 큰 부분은 attention 내부를 *Prior-Association*과 *Series-Association*의 두 가지로 나누었다는 것입니다. 
 
-$$ 
-Prior Association: P = \frac{1}{\sqrt{2 \pi}\sigma_i} exp(-\frac{(|j-i|)^2}{2\sigma^2_i}), i,j\in {1, ..., N} 
-$$
+$$ Prior Association: P = \frac{1}{\sqrt{2 \pi}\sigma_i} exp(-\frac{(|j-i|)^2}{2\sigma^2_i}), i,j\in {1, ..., N} $$
 $$ Series Association: S = Softmax(\frac{QK^T}{\sqrt{d_{model}}}) $$
 
 먼저 **prior association**은 이름에서 알 수 있듯이, 모형에서 사용하는 Gaussian kernel의 시그마를 학습합니다. Gaussian Kernel은 attention의 Query, Key를 학습할 때 영향을 줍니다. 커널을 통해 다양한 패턴의 시계열 자료에 적용할 수 있다고 저자는 설명하고 있습니다. **Series asssociation**은 Query와 Key를 학습하는 부분입니다. 저자들은 이 두 association을 통해서(정확히는 prior association) 시계열 자료를 point-wise가 아닌, temporal dependency를 학습할 수 있다고 설명합니다. Gaussian Kernel의 $\sigma$를 통해서 인접한 time point에 더 큰 가중치를 줄 수 있다는 것이지요.
