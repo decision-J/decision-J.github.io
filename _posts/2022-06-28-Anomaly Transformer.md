@@ -34,16 +34,20 @@ Input embedding $X_{0}$가 들어오면 크게 **Anomaly Attenion** layer와 Fee
 ### Anomaly Attention
 Anomaly attention은 기본적인 attention을 가지고 저자들이 time series anomaly detection에 맞게 매커니즘을 조금 수정한 형태입니다. 가장 큰 부분은 attention 내부를 *Prior-Association*과 *Series-Association*의 두 가지로 나누었다는 것입니다. 
 
-$$ Prior Association: P = \frac{1}{\sqrt{2 \pi}\sigma_i} exp(-\frac{(|j-i|)^2}{2\sigma^2_i}), i,j\in {1, ..., N} $$
-$$ Series Association: S = Softmax(\frac{QK^T}{\sqrt{d_{model}}}) $$
+$$ 
+Prior Association: P = \frac{1}{\sqrt{2 \pi}\sigma_i} exp(-\frac{(|j-i|)^2}{2\sigma^2_i}), i,j\in {1, ..., N} 
+Series Association: S = Softmax(\frac{QK^T}{\sqrt{d_{model}}}) 
+$$
 
 먼저 **prior association**은 이름에서 알 수 있듯이, 모형에서 사용하는 Gaussian kernel의 시그마를 학습합니다. Gaussian Kernel은 attention의 Query, Key를 학습할 때 영향을 줍니다. 커널을 통해 다양한 패턴의 시계열 자료에 적용할 수 있다고 저자는 설명하고 있습니다. **Series asssociation**은 Query와 Key를 학습하는 부분입니다. 저자들은 이 두 association을 통해서(정확히는 prior association) 시계열 자료를 point-wise가 아닌, temporal dependency를 학습할 수 있다고 설명합니다. Gaussian Kernel의 $\sigma$를 통해서 인접한 time point에 더 큰 가중치를 줄 수 있다는 것이지요.
 
 ### Association Discrepancy
 Association Discrepancy는 앞서 살펴본 prior association과 series association간의 차이를 계산하는 것입니다. 차이를 계산하는 방법은 KL divergence를 활용하였으며, KL divergence의 assymetric한 점을 보완하기 위해 순서를 바꿔가며 계산한 평균을 사용하였습니다. Association Discrepancy는 Loss function의 한 term으로 포함되며 가중치를 업데이트 하는데 사용하기도 하고 추후 anomaly score를 계산하는 데에도 사용됩니다.
 
-$$ AssDis(P,S; X) = \frac{1}{L} \sum^L_{l=1}(KL(P^l_i||S^l_i) + KL(S^l_i||P^l_i)) $$
-$$ where\,\, i=1,...,N $$
+$$ 
+AssDis(P,S; X) = \frac{1}{L} \sum^L_{l=1}(KL(P^l_i||S^l_i) + KL(S^l_i||P^l_i)) 
+where\,\, i=1,...,N
+$$
 
 ### Mini Max Association Learning
 저자들은 Attention 내부에 prior & series association 두 개의 term이 있는 만큼 이를 활용하여 Loss function을 병렬적으로 구성하는 mini max learning strategy를 제안합니다. 우선 Anomaly transformer에서 사용하는 Loss function은 다음과 같습니다.
@@ -56,8 +60,10 @@ $$
 
 Mini max는 말 그대로 **Minimize phase, Maxmize phase** 두 부분으로 나누어 Loss function을 다르게 적용하는 것입니다. 
 
-$$ Minimize: L_{Total}(\hat{X}, P, S_{detach}, -\lambda; X) $$
-$$ Maximize: L_{Total}(\hat{X}, P_{detach}, S, \lambda; X) $$
+$$ 
+Minimize: L_{Total}(\hat{X}, P, S_{detach}, -\lambda; X) 
+Maximize: L_{Total}(\hat{X}, P_{detach}, S, \lambda; X)
+$$
 
 수식에서 알 수 있듯이, Minimize phase때는 Prior association을 학습하고, Maximize phase 때는 Series association을 학습합니다. 이 때, $\lambda$의 부호에 따라 학습의 방향이 달라지는 것입니다. 논문의 그림을 보면 좀 더 이해하기 쉽습니다. 
 
@@ -70,8 +76,10 @@ $$ Maximize: L_{Total}(\hat{X}, P_{detach}, S, \lambda; X) $$
 중요한 것은 오른쪽의 **Maxmize phase**인데요. 사실상 이 부분을 통해 모형이 Anomaly를 찾는다고도 할 수 있겠습니다. 앞 서와는 달리 $\lambda$가 0보다 크므로 두 association간의 차이가 커지도록 학습을 하게 됩니다. 따라서 그림에서와 같이 시계열 내에서 anomaly pattern을 보이는 시점에서의 경우 Association discrepancy가 더 커지도록 (벌어지도록) 해줍니다.
 
 ### Association-based Anomaly Criterion
-$$ Anomaly Score (X) = Softmax(-AssDis(P, S; X)) \odot (||X_{i, :}-\hat{X}_{i, :}||)^2 $$
-$$ where\,\, i=1,...,N $$
+$$ 
+Anomaly Score (X) = Softmax(-AssDis(P, S; X)) \odot (||X_{i, :}-\hat{X}_{i, :}||)^2 
+where\,\, i=1,...,N
+$$
 
 Anomaly Transformer가 Anomaly들을 detect하는 score입니다. 기본적으로 reconstruction error를 기반으로 탐색을 하지만, 본 모형만의 Association discrepancy term이 추가되어 상호 협력적으로 이상점을 탐지하는 것을 확인할 수 있습니다. 이를 통해 성능을 더욱 향상시킬 수 있다고 저자들은 설명합니다. 
   
